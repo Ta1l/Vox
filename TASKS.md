@@ -88,25 +88,40 @@ Git commit: 2d91b86
 
 # M2 — PostgreSQL and persistence
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
-Implement:
+Implemented:
 
-- PostgreSQL
-- Drizzle
-- migration workflow
-- development database
-- test database
-- initial user
-- repository conventions
+- PostgreSQL 16 via Docker Compose
+- Drizzle ORM configuration
+- Migration workflow (drizzle-kit)
+- Development database (finapp_dev)
+- Test database connection
+- Users table schema
+- Money value utilities (integer kopecks only)
 
-Implement Money value utilities.
+Money utilities:
+- toKopecks/toRubles conversion
+- add, subtract, multiply, divideEqually
+- compare, isPositive, isZero, isNegative
+- format for Russian locale
+- validate for type safety
+- 28 comprehensive test cases
+
+Repository conventions:
+- src/lib/db/schema/ for table definitions
+- src/lib/db/client.ts for connection
+- drizzle/ for migrations
+- Integer kopecks enforced throughout
 
 Acceptance:
 
-- migrations work from empty DB;
-- test DB can be recreated;
-- integer money invariants tested.
+✓ Migrations work from empty DB
+✓ Test DB can be recreated
+✓ Integer money invariants tested
+✓ All tests pass (30/30)
+
+Git commit: baa1494
 
 ---
 

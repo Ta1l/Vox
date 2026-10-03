@@ -4,11 +4,11 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M1 COMPLETE — REPOSITORY FOUNDATION READY
+STATUS: M2 COMPLETE — DATABASE AND MONEY UTILITIES READY
 
-Milestone 1 завершён. Next.js приложение инициализировано с мобильной навигацией.
+Milestone 2 завершён. PostgreSQL database с Money utilities реализованы.
 
-Ready to proceed to M2 (PostgreSQL and persistence).
+Ready to proceed to M3 (Income tracking).
 
 ---
 
@@ -82,6 +82,13 @@ provider abstraction with deterministic Financial Engine
 - Health API endpoint
 - Vitest + Playwright configured
 
+**M2 - PostgreSQL and persistence:** COMPLETE ✓
+- Docker Compose with PostgreSQL 16
+- Drizzle ORM
+- Money utilities (integer kopecks)
+- Users table migration
+- Database connection tested
+
 ---
 
 ## Current database state
@@ -122,20 +129,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 1:** COMPLETE ✓
+**Milestone 2:** COMPLETE ✓
 
-Next.js repository foundation with mobile-first UI.
+PostgreSQL database with Drizzle ORM and Money utilities.
 
 ---
 
 ## Next action
 
-Proceed to M2: PostgreSQL and persistence
-- Docker Compose with PostgreSQL
-- Drizzle ORM setup
-- Migration workflow
-- Money utility functions
-- Initial database schema
+Proceed to M3: Income tracking
+- Income entry schema
+- IN_TRANSIT state lifecycle
+- Mobile income form
+- Income does not increase balance until RECEIVED
 
 See TASKS.md.
 
