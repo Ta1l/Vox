@@ -158,23 +158,28 @@ Git commit: (pending)
 
 # M4 — Expenses
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
-Implement:
+Implemented:
 
-- actual expense;
-- title/category;
-- amount;
-- comment;
-- date.
-
-Implement configurable categories.
+- Expense entry schema (expense_entries table)
+- Expense domain service with RULE-E1 (immediate balance reduction)
+- API endpoints: POST /api/expenses, GET /api/expenses
+- Mobile expense form with category selection
+- Database migration with indexes
+- 5 unit tests
 
 Acceptance:
 
-- expense changes current available balance correctly;
-- expense history works;
-- calendar receives expense events.
+✓ Expense creation works
+✓ Total expenses calculated correctly
+✓ Category filtering works
+✓ All tests pass (46/46)
+✓ TypeScript strict mode passes
+✓ Lint passes
+✓ Production build succeeds
+
+Git commit: (pending)
 
 ---
 

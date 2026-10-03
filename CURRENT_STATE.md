@@ -4,11 +4,11 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M3 COMPLETE — INCOME TRACKING IMPLEMENTED
+STATUS: M4 COMPLETE — EXPENSES IMPLEMENTED
 
-Milestone 3 завершён. Income tracking с state lifecycle полностью реализован.
+Milestone 4 завершён. Expense tracking полностью реализован.
 
-Ready to proceed to M4 (Expenses).
+Ready to proceed to M5 (Calendar).
 
 ---
 
@@ -99,6 +99,15 @@ provider abstraction with deterministic Financial Engine
 - 11 comprehensive tests covering state transitions and financial rules
 - Database migration with constraints and indexes
 
+**M4 - Expenses:** COMPLETE ✓
+- Expense entry schema
+- Expense domain service
+- API endpoints (POST /api/expenses, GET /api/expenses)
+- Mobile expense form with categories
+- RULE-E1: Expense immediately reduces available balance
+- 5 unit tests covering expense creation and totals
+- Database migration with indexes
+
 ---
 
 ## Current database state
@@ -139,19 +148,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 3:** COMPLETE ✓
+**Milestone 4:** COMPLETE ✓
 
-Income tracking with state lifecycle implemented.
+Expense tracking implemented.
 
 ---
 
 ## Next action
 
-Proceed to M4: Expenses
-- Expense entry schema
-- Categories
-- Mobile expense form
-- Expense reduces available balance immediately
+Proceed to M5: Calendar
+- Mobile calendar UI
+- Display income/expenses/obligations per date
+- Weekly statistics
+- Day details view
 
 See TASKS.md.
 
