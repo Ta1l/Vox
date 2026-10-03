@@ -1,0 +1,1 @@
+ALTER TABLE "debts" ADD CONSTRAINT "chk_debt_interest_valid" CHECK ("debts"."interest_rate_percent" IS NULL OR "debts"."interest_rate_percent" >= 0);

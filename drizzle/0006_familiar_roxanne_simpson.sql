@@ -1,0 +1,1 @@
+ALTER TABLE "debts" ALTER COLUMN "interest_rate_percent" SET DATA TYPE numeric(5, 2);

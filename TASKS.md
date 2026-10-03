@@ -247,7 +247,7 @@ Git commit: pending
 
 # M7 — Debts
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement debt model:
 
@@ -265,15 +265,19 @@ Implement debt payments.
 
 Acceptance:
 
-- repayment history auditable;
-- calculations tested;
-- partial payment supported.
+- repayment history auditable; ✓
+- calculations tested; ✓
+- partial payment supported. ✓
+
+**QUALITY GATE:** typecheck, lint, 60 unit tests, production build, and 4 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 
 # M8 — Goals
 
-STATUS: TODO
+STATUS: IN PROGRESS
 
 Implement:
 

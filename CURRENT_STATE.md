@@ -4,7 +4,7 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M6 COMPLETE — QUALITY GATE PASSED — M7 IN PROGRESS
+STATUS: M7 COMPLETE — QUALITY GATE PASSED — M8 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -127,6 +127,15 @@ provider abstraction with deterministic Financial Engine
 - 5 obligation tests plus calendar regression coverage
 - Quality gate passed: typecheck, lint, 54 unit tests, production build, 3 mobile Playwright tests
 
+**M7 - Debts:** COMPLETE ✓
+- Debt and debt-payment schemas/migrations (`drizzle/0005`–`0007`)
+- Original/current balance, minimum payment, schedule, priority, due date, notes, status
+- Transactional partial payments with optimistic version guard
+- Auditable previous/new balances, optional idempotency key, and ownership checks
+- Catch-up amount calculation from missed minimum-payment intervals
+- Debt APIs and mobile `/debts` creation/list flow
+- Quality gate passed: typecheck, lint, 60 unit tests, production build, 4 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -167,19 +176,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 7:** IN PROGRESS
+**Milestone 8:** IN PROGRESS
 
-Debts and debt payments.
+Goals and goal contributions.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M6 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M7 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M7 — Debts
+After review: M8 — Goals
 
 See TASKS.md and AUTOPILOT.md.
 

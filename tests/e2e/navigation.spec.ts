@@ -39,4 +39,10 @@ test.describe("Mobile Application", () => {
     await page.waitForURL("/calendar");
     await expect(page.getByRole("heading", { name: "Календарь" })).toBeVisible();
   });
+
+  test("should render debts page", async ({ page }) => {
+    await page.goto("/debts");
+    await expect(page.getByRole("heading", { name: "Долги" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
+  });
 });
