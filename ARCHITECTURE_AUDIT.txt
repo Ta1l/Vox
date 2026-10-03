@@ -1,0 +1,437 @@
+# Независимый архитектурный аудит
+
+Аудит выполнен по всем указанным документам. Реализация отсутствует, поэтому ниже — аудит проектных решений и согласованности спецификаций. Изменений в файлы не вносил.
+
+## CRITICAL
+
+### C1. Нет единого источника истины для денежных движений
+
+Где: `DATABASE.md` — `accounts`, `income_entries`, `expense_entries`, `debt_payments`, `goal_contributions`, `budget_envelopes`; `DOMAIN_RULES.md` — `RULE-FS2`, `RULE-E1`, `RULE-E2`.
+
+Проблема: одновременно существуют:
+
+- вычисляемый баланс из income/expenses/allocations;
+- mutable `accounts.balance_kopecks`;
+- mutable `saved_amount`, `funded_amount`, `spent_amount`;
+- budget allocations;
+- debt payments.
+
+При этом debt payment, goal contribution и envelope spending не имеют явной связи с денежным списанием со счёта.
+
+Реальный сбой: пользователь получает 100 000 ₽, затем вносит 30 000 ₽ в цель. `saved_amount` увеличивается, но available balance может остаться прежним. Если одновременно существует allocation, сумма может быть списана дважды.
+
+Минимальное исправление: ввести единый append-only ledger/money-movement слой с account, amount, source, effective timestamp и idempotency key. Reservations/envelopes должны быть отдельным механизмом. Балансы и агрегаты должны вычисляться из ledger либо обновляться только атомарно вместе с ним.
+
+---
+
+### C2. `availableToAllocate` не защищает будущие HARD obligations
+
+Где: `ARCHITECTURE.md` — Financial Engine; `DOMAIN_RULES.md` — `RULE-P1`, `RULE-A1`, `RULE-FS2`; `PRODUCT.md` — Flow 10.
+
+Проблема: protected balance определяется в основном через HARD envelopes. Ближайший HARD payment сам по себе не становится резервом.
+
+Реальный сбой: на счёте 100 000 ₽, завтра обязательный платёж 90 000 ₽, но envelope не создан. AI видит 100 000 ₽ discretionary и предлагает потратить всё.
+
+Минимальное исправление: определить horizon-aware spendability:
+
+- current cash;
+- locked allocations;
+- HARD obligations в заданном горизонте;
+- funded HARD envelopes;
+- допустимый discretionary остаток.
+
+Эта логика должна быть в Financial Engine, а не в prompt.
+
+---
+
+### C3. TOCTOU между AI validation и approval
+
+Где: `AI_POLICY.md` — validation pipeline; `DOMAIN_RULES.md` — `RULE-AI4`; `DATABASE.md` — budget allocations.
+
+Проблема: proposal валидируется в один момент, а применяется позже. Между этими действиями баланс может измениться.
+
+Реальный сбой: proposal рассчитан на 50 000 ₽. Затем пользователь тратит 40 000 ₽. После этого старый proposal всё ещё утверждается и создаёт перерасход.
+
+Минимальное исправление: proposal должен содержать snapshot/version и срок действия. Approval должен повторно пересчитывать инварианты внутри транзакции с блокировками или `SERIALIZABLE`/optimistic version check. Approval command должен быть идемпотентным.
+
+---
+
+### C4. В production-сценарии отсутствует обязательная аутентификация
+
+Где: `SECURITY.md` — V1 single-user mode.
+
+Проблема: приложение полагается на VPN/IP whitelist, а basic auth обозначен как optional. Это не является обязательной application-level authorization boundary.
+
+Реальный сбой: ошибка в Caddy/VPN-конфигурации делает доступными все финансовые данные и mutation endpoints.
+
+Минимальное исправление: обязательная authentication/session boundary даже для одного пользователя, server-side user context, CSRF protection и запрет прямого доступа к web-контейнеру. VPN/basic auth могут остаться дополнительным слоем.
+
+---
+
+### C5. Audit trail фактически можно удалить
+
+Где: `DATABASE.md` — `audit_log`; `SECURITY.md` — database grants; FK `ON DELETE CASCADE`.
+
+Проблема: application role получает `DELETE` на все таблицы. `audit_log.user_id` ссылается на users через `ON DELETE CASCADE`. Это противоречит append-only и 7-летнему хранению аудита.
+
+Реальный сбой: удаление пользователя удаляет финансовую историю и audit trail. Изменение expense может изменить баланс без полной записи предыдущего состояния.
+
+Минимальное исправление: отдельная append-only audit role/table policy, запрет UPDATE/DELETE на уровне БД, отсутствие cascade-delete для audit. Финансовые исправления — только reversal/correction entries.
+
+---
+
+### C6. Multi-user isolation не обеспечена на уровне модели
+
+Где: `DATABASE.md` — таблицы с отдельными `user_id`; `AI_POLICY.md` — tool signatures.
+
+Проблема: связи вроде `debt_id + user_id`, `goal_id + user_id`, `conversation_id + user_id` не закреплены composite FK. Полиморфный `target_id` вообще не имеет FK. AI tools часто принимают только ID без user context.
+
+Реальный сбой: ошибка в repository позволяет пользователю передать ID чужого debt/goal/envelope и прочитать или изменить его.
+
+Минимальное исправление: обязательный authenticated tenant context во всех repositories/tools, composite ownership constraints либо RLS, запрет запросов только по глобальному ID.
+
+---
+
+### C7. Income settlement спроектирован непоследовательно
+
+Где: `ARCHITECTURE.md` упоминает `income_settlements`; таблица отсутствует в `DATABASE.md`; `DOMAIN_RULES.md` — `RULE-I3`, `RULE-I4`.
+
+Проблема: receipt моделируется изменением статуса самого income. Нет partial receipt, нескольких settlement events, строгой связи settlement с account и полноценной идемпотентности.
+
+Реальный сбой: два параллельных запроса `mark as received` дважды увеличивают account balance. Частичное получение 5 000 ₽ из ожидаемых 10 000 ₽ невозможно выразить корректно.
+
+Минимальное исправление: отдельные immutable settlement records, строгая state machine, conditional update по текущему статусу, idempotency key и атомарное создание cash movement.
+
+---
+
+### C8. Ограничение «один активный planning cycle» не реализовано индексом
+
+Где: `DOMAIN_RULES.md` — `RULE-PC1`; `DATABASE.md` — partial unique index.
+
+Проблема: уникальность задана по `(user_id, start_date, end_date) WHERE status='ACTIVE'`, поэтому два активных цикла с разными датами допустимы.
+
+Реальный сбой: два активных цикла одновременно резервируют один и тот же cash balance, AI получает противоречивый контекст.
+
+Минимальное исправление: `UNIQUE(user_id) WHERE status = 'ACTIVE'`, плюс проверка пересечения диапазонов и транзакционная смена active cycle.
+
+## HIGH
+
+### H1. Current balance не отделён от planned/future movements
+
+Где: `DOMAIN_RULES.md` — `RULE-I1`, `RULE-FS2`; `DATABASE.md` — dashboard formula.
+
+Проблема: формула агрегирует expenses без явного `as-of`/posted semantics. Будущий expense может уменьшить текущий баланс. `received_at` и `spent_at` могут быть произвольно датированы.
+
+Реальный сбой: пользователь записывает расход на пятницу заранее, и деньги исчезают из сегодняшнего available balance.
+
+Минимальное исправление: разделить `posted money movements` и `planned obligations`; определить effective timestamp/date и использовать half-open date ranges в timezone пользователя.
+
+---
+
+### H2. Debt accounting не связан с cash accounting
+
+Где: `DATABASE.md` — `debts`, `debt_payments`; `DOMAIN_RULES.md` — `RULE-D1`–`RULE-D4`.
+
+Проблема:
+
+- debt payment не имеет `account_id` или ledger movement;
+- нет DB-check `new_balance >= 0`;
+- нет проверки, что `previous_balance` равен фактическому текущему балансу;
+- `catch_up_amount` хранится как mutable field и может устареть;
+- schedule для расчёта catch-up не смоделирован.
+
+Реальный сбой: долг уменьшается на 30 000 ₽, но cash balance не меняется. Или два параллельных платежа оба читают старый баланс.
+
+Минимальное исправление: атомарная операция `cash movement + debt payment + balance update`, row lock/version check, derived catch-up metric и явная debt schedule model.
+
+---
+
+### H3. Большинство денежных команд не имеют идемпотентности
+
+Где: `DOMAIN_RULES.md` — только recurrence/import явно требуют idempotency; остальные операции; `DATABASE.md`.
+
+Проблема: нет idempotency keys/unique command keys для:
+
+- income receipt;
+- debt payment;
+- goal contribution;
+- envelope spending;
+- budget approval;
+- notification creation;
+- expense creation.
+
+Реальный сбой: повтор POST после timeout создаёт два расхода или два debt payment.
+
+Минимальное исправление: request idempotency key, уникальные ограничения и conditional updates для каждой финансовой команды.
+
+---
+
+### H4. Recurrence и timezone model недостаточно определены
+
+Где: `DOMAIN_RULES.md` — `RULE-O2`, `RULE-TZ1`, `RULE-TZ2`; `DATABASE.md` — `timestamp`, `recurrence_config`.
+
+Проблема:
+
+- используются `timestamp` без timezone;
+- `recurrence_config` — свободный JSONB без schema validation;
+- не определены правила для 29/30/31 числа месяца;
+- не определены DST, inclusive/exclusive boundaries;
+- date-only значения рискуют пройти через UTC-конверсию.
+
+Реальный сбой: ежемесячный платёж с 31 числа перескакивает на другую дату или создаётся дважды при смене timezone.
+
+Минимальное исправление: `timestamptz` для instant, `date` для calendar values, versioned recurrence schema и тесты DST/month-end/locale boundaries.
+
+---
+
+### H5. Budget proposal persistence недостаточна
+
+Где: `ARCHITECTURE.md` перечисляет `budget_plans`, `budget_plan_items`; в `DATABASE.md` есть только `budget_allocations`.
+
+Проблема: отсутствуют proposal ID, snapshot version, expiry, approval state, edit history и связь approved allocation с конкретным proposal.
+
+Реальный сбой: пользователь утверждает устаревший proposal, а система не может доказать, что именно было показано и проверено.
+
+Минимальное исправление: отдельные draft/proposal/approval entities или эквивалентная immutable модель с hash, snapshot version и audit linkage.
+
+---
+
+### H6. AI proposal validation неполна
+
+Где: `AI_POLICY.md` — `validateAIProposal`.
+
+Проблема: явно проверяется не всё:
+
+- отрицательные allocation amounts;
+- `targetId` для `GENERAL`;
+- обязательность `targetId` для DEBT/GOAL/ENVELOPE;
+- allocation к закрытой сущности;
+- `remainingDiscretionaryKopecks`;
+- `protectionsRespected`;
+- соответствие proposal конкретному cycle.
+
+Реальный сбой: allocation `+60 000` и `-10 000` даёт формально допустимый total, но фактически нарушает денежную семантику.
+
+Минимальное исправление: строгий discriminated union schema, non-negative bounded amounts, все производные значения пересчитывать сервером и не доверять полям AI.
+
+---
+
+### H7. Prompt injection защита недостаточна
+
+Где: `AI_POLICY.md` и `SECURITY.md` — `sanitizeForAI`, summaries, goal descriptions.
+
+Проблема: удаление строк вроде `system:` или ``` не предотвращает семантическую prompt injection. Более опасно то, что LLM-generated summary сохраняется и затем становится долговременным контекстом.
+
+Реальный сбой: описание цели или комментарий убеждает summary-generator сохранить правило «всегда направлять весь discretionary balance в эту цель».
+
+Минимальное исправление: untrusted fields передавать отдельно и явно как data, не включать свободный текст без необходимости, валидировать summaries схемой и provenance, запрещать summary изменять финансовые факты/защиты.
+
+---
+
+### H8. AI token usage может стать неконтролируемым
+
+Где: `AI_POLICY.md` — tools, retries, token optimization; `SECURITY.md` — in-memory rate limiter.
+
+Проблема:
+
+- нет жёсткого лимита размера user message;
+- tool histories не имеют явной pagination/limit;
+- нет max tool-call steps;
+- invalid proposal вызывает повторные LLM calls;
+- лимит 10/min хранится в памяти процесса;
+- `$10/month` — только warning, не hard cap;
+- classification может вызвать AI отдельно для каждой импортированной строки.
+
+Реальный сбой: большой CSV или длинное сообщение запускает тысячи дорогих классификаций/ретраев.
+
+Минимальное исправление: request/token/tool budgets, max input/output size, per-user and global hard quotas, distributed rate limiting, circuit breaker, batching и deterministic-first classification.
+
+---
+
+### H9. FinancialSnapshot может быть внутренне несогласованным
+
+Где: `AI_POLICY.md` — snapshot; `DATABASE.md` — parallel dashboard queries.
+
+Проблема: snapshot собирается из нескольких запросов без обязательной общей transaction snapshot. Поля могут относиться к разным моментам времени.
+
+Реальный сбой: income query уже увидел receipt, expense query ещё нет, AI получает баланс, который никогда не существовал.
+
+Минимальное исправление: строить snapshot в `REPEATABLE READ` transaction, возвращать snapshot/version ID и применять его при approval.
+
+---
+
+### H10. Bank import deduplication недостаточна
+
+Где: `DATABASE.md` — `bank_transactions`; `DOMAIN_RULES.md` — `RULE-ID2`.
+
+Проблема: `external_id` nullable, а PostgreSQL допускает несколько `NULL` в unique index. Для CSV/manual imports нет надёжного fingerprint. Amount sign не определён.
+
+Реальный сбой: один банковский расход импортируется повторно без external ID и дважды попадает в расходы.
+
+Минимальное исправление: import batch + deterministic fingerprint `(provider/account/date/amount/currency/reference)`, уникальность на нормализованной записи, явное разделение debit/credit и one-to-one matching.
+
+---
+
+### H11. Нет transactional outbox для notifications/domain events
+
+Где: `ARCHITECTURE.md` — notifications consume domain events; `DATABASE.md` — outbox отсутствует.
+
+Проблема: mutation может закоммититься, а постановка job/notification — потеряться. Повторный запуск может создать дубликаты.
+
+Реальный сбой: income отмечен received, но уведомление не создаётся; или reminder отправляется несколько раз.
+
+Минимальное исправление: transactional outbox в той же транзакции, deduplication key на событие и idempotent consumers.
+
+---
+
+### H12. Отдельные security controls имеют опасные допущения
+
+Где: `SECURITY.md` — Web Push, rate limiting, CSP, backups.
+
+Проблемы:
+
+- `url.origin.startsWith(allowedOrigin)` допускает похожие malicious origins;
+- in-memory limiter не работает согласованно при нескольких процессах;
+- CSP допускает `unsafe-inline`;
+- backup script сначала создаёт plaintext dump и оставляет его рядом с encrypted copy.
+
+Реальный сбой: сервер отправляет push payload на attacker-controlled endpoint или plaintext backup компрометируется.
+
+Минимальное исправление: строгое сравнение origin/hostname, distributed limiter, nonce-based CSP и немедленное удаление plaintext backup после успешного шифрования.
+
+---
+
+### H13. Нет политики передачи финансовых данных внешнему LLM
+
+Где: `AI_POLICY.md` — descriptions, debt details, conversation storage; `SECURITY.md` — provider calls.
+
+Проблема: внешнему провайдеру могут передаваться цели, заметки, финансовые детали и история. Не определены retention, zero-retention contract, redaction, consent и data residency.
+
+Реальный сбой: sensitive financial context сохраняется в provider logs или используется для обучения.
+
+Минимальное исправление: data minimization, provider policy/zero-retention, redaction PII, явный opt-in и отдельные retention rules для prompts, messages и usage logs.
+
+## MEDIUM
+
+### M1. `integer` может переполниться
+
+Где: `DATABASE.md` — все monetary columns.
+
+Проблема: PostgreSQL `integer` ограничен примерно 2,147 млрд kopecks, то есть около 21,47 млн ₽.
+
+Реальный сбой: накопленный баланс или импорт больших исторических данных вызывает overflow.
+
+Минимальное исправление: `bigint`/`numeric` с единым money adapter и безопасной сериализацией TypeScript.
+
+---
+
+### M2. Схема слабее заявленных инвариантов
+
+Где: `DATABASE.md`.
+
+Примеры:
+
+- `paid_at` может быть заполнен для PENDING;
+- нет `new_balance >= 0`;
+- нет CHECK для `GENERAL`/`target_id`;
+- `currency` не ограничена RUB;
+- `interest_rate_percent` может быть отрицательной;
+- `obligation_id` у occurrence nullable;
+- expression indexes с `timestamp::date` требуют отдельной проверки миграции.
+
+Минимальное исправление — перенести критические инварианты из application-only в DB constraints или triggers.
+
+---
+
+### M3. Test plan не покрывает главные production failure modes
+
+Где: `TEST_PLAN.md`.
+
+Недостаточно тестов на:
+
+- concurrent debt payments;
+- duplicate POST/retry;
+- stale AI approval;
+- two active cycles;
+- DST/month-end recurrence;
+- delayed income;
+- future-dated expenses;
+- ledger reconciliation;
+- outbox delivery;
+- cross-user access;
+- provider quota exhaustion.
+
+Некоторые тесты сами нарушают правила: используют floating-point conversion и прямой `reduce` для money.
+
+---
+
+### M4. V1 содержит лишние незрелые подсистемы
+
+Где: `ARCHITECTURE.md`, `TASKS.md`, `DATABASE.md`.
+
+До стабилизации ledger добавлены bank connections, multiple accounts, push, AI summaries, future multi-user placeholders и provider switching.
+
+Это не ошибка само по себе, но увеличивает surface area и усложняет корректность.
+
+Безопасно отложить:
+
+- прямые bank providers;
+- Telegram;
+- embeddings;
+- multi-currency;
+- advanced analytics;
+- proactive autonomous AI;
+- сложную multi-account reconciliation.
+
+## LOW
+
+Независимых LOW-проблем, которые существенно влияют на production correctness, не добавляю. UI-дизайн и мобильная ориентация в целом последовательны и не требуют переписывания архитектуры.
+
+## A. Must fix before coding
+
+1. Определить canonical ledger и разделить:
+   - posted cash;
+   - planned obligations;
+   - reservations;
+   - envelopes;
+   - debt/goal state.
+2. Формально определить available balance и horizon-aware HARD reserve.
+3. Спроектировать settlement model для income.
+4. Добавить обязательную authentication/authorization boundary.
+5. Исправить tenant isolation и user-scoped AI tools.
+6. Сделать approval, debt payments, income receipt и allocations транзакционными и идемпотентными.
+7. Исправить active-cycle uniqueness.
+8. Зафиксировать timezone/recurrence semantics.
+9. Ввести transactional outbox.
+10. Ограничить AI input, tokens, tool calls, retries и monthly spend.
+11. Усилить prompt-injection и summary validation.
+12. Защитить append-only audit и запретить cascade deletion истории.
+13. Добавить concurrency/security/invariant tests до M1–M3.
+
+## B. Can safely defer
+
+- Direct bank API integrations.
+- Telegram.
+- Multiple currencies.
+- Embeddings и semantic history search.
+- Advanced charts.
+- Autonomous/proactive AI.
+- Full multi-user registration, если scoped single-user auth уже безопасен.
+- Performance optimizations вроде virtualization до появления больших объёмов данных.
+
+## C. Что спроектировано правильно и не следует переписывать
+
+- PostgreSQL + modular monolith.
+- Deterministic Financial Engine как источник финансовой истины.
+- Integer money representation как принцип.
+- Разделение earned income и received cash.
+- HARD/NEGOTIABLE/FLEXIBLE protection model как концепция.
+- Typed AI tools вместо SQL-доступа.
+- Structured AI output + server-side validation.
+- Explicit user approval перед применением AI proposal.
+- Staging → deduplication → matching → optional AI classification для imports.
+- Идемпотентная генерация recurring occurrences через unique key.
+- Отдельный worker для фоновых задач.
+- Mobile-first UI и общий design system.
+
+Главный вывод: проектная идея сильная, но до начала реализации необходимо сначала закрыть денежную модель, ledger, concurrency, authentication и AI cost/safety boundaries. Без этого дальнейшая реализация создаст трудно исправимый финансовый debt.

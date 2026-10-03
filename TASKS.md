@@ -1,0 +1,598 @@
+# TASKS.md
+
+# Rules
+
+Work milestone by milestone.
+
+Do not begin the next milestone until:
+
+- relevant functionality works;
+- typecheck passes;
+- lint passes;
+- tests pass;
+- relevant Playwright flow passes;
+- CURRENT_STATE.md is updated.
+
+Each milestone should end in a usable repository state.
+
+---
+
+# M0 — Product and domain specification
+
+STATUS: COMPLETE ✓
+
+Completed deliverables:
+
+- ✅ PRODUCT.md — full product spec with user flows
+- ✅ DOMAIN_RULES.md — 50+ financial invariants defined (updated post-review)
+- ✅ DATABASE.md — complete PostgreSQL schema (22+ tables, updated post-review)
+- ✅ AI_POLICY.md — AI boundaries, tools, validation pipeline (updated post-review)
+- ✅ SECURITY.md — comprehensive security architecture (updated post-review)
+- ✅ TEST_PLAN.md — unit/integration/E2E/AI-eval strategy (updated post-review)
+- ✅ DESIGN_SYSTEM.md — mobile-first UI design system
+- ✅ Independent architecture review completed
+- ✅ Critical findings addressed and documented in ARCHITECTURE_REVIEW_RESPONSE.md
+- ✅ AUTOPILOT infrastructure created
+
+**Key architectural improvements from review:**
+- Mandatory authentication boundary (even for single-user V1)
+- HARD protection includes upcoming obligations within horizon
+- TOCTOU prevention via snapshot versioning + re-validation in transaction
+- Audit log protected at database permission level
+- AI validation strengthened with comprehensive checks
+- Token/cost hard limits with distributed rate limiting
+- Money columns upgraded to bigint
+- Optimistic locking for income settlement
+- Active cycle uniqueness enforced by database
+
+**AUTOPILOT infrastructure:**
+- AUTOPILOT.md — autonomous workflow specification
+- .claude/agents/financial-auditor.md — Opus financial audit subagent
+- .claude/review-prompts/ — M5, M10, M17, M23 review prompts
+- scripts/run-codex-review.sh — Codex review execution script
+- .reviews/ — review artifact storage
+
+Ready for AUTOPILOT start with M1 implementation.
+
+---
+
+# M1 — Repository foundation
+
+STATUS: TODO
+
+Create:
+
+- Next.js project
+- TypeScript strict configuration
+- Tailwind
+- shadcn/ui
+- linting
+- formatting
+- environment validation
+- Vitest
+- Playwright
+- Docker development setup
+
+Create basic mobile application shell.
+
+Create bottom navigation.
+
+Add health endpoint.
+
+Acceptance:
+
+- project boots;
+- build passes;
+- test command passes;
+- Playwright can open mobile shell.
+
+---
+
+# M2 — PostgreSQL and persistence
+
+STATUS: TODO
+
+Implement:
+
+- PostgreSQL
+- Drizzle
+- migration workflow
+- development database
+- test database
+- initial user
+- repository conventions
+
+Implement Money value utilities.
+
+Acceptance:
+
+- migrations work from empty DB;
+- test DB can be recreated;
+- integer money invariants tested.
+
+---
+
+# M3 — Income
+
+STATUS: TODO
+
+Implement:
+
+- income entry;
+- earned date;
+- amount;
+- expected payment date;
+- status;
+- received date;
+- IN_TRANSIT state.
+
+Create mobile income form.
+
+Acceptance:
+
+- recording income does not increase available cash until received;
+- expected future income is visible separately;
+- Playwright flow passes.
+
+---
+
+# M4 — Expenses
+
+STATUS: TODO
+
+Implement:
+
+- actual expense;
+- title/category;
+- amount;
+- comment;
+- date.
+
+Implement configurable categories.
+
+Acceptance:
+
+- expense changes current available balance correctly;
+- expense history works;
+- calendar receives expense events.
+
+---
+
+# M5 — Calendar
+
+STATUS: TODO
+
+Implement mobile calendar.
+
+Each date may display:
+
+- earned income;
+- received income;
+- income expected;
+- expenses;
+- obligations.
+
+Tap date opens day details.
+
+Week interaction exposes weekly statistics.
+
+Statistics should be calculated by code.
+
+Acceptance:
+
+- responsive at mobile target viewports;
+- major calendar flows covered by Playwright.
+
+---
+
+# M6 — Recurring obligations
+
+STATUS: TODO
+
+Implement:
+
+- one-time obligation;
+- weekly;
+- monthly;
+- custom recurrence;
+- HARD;
+- NEGOTIABLE;
+- FLEXIBLE;
+- scheduled occurrences;
+- paid state;
+- overdue state.
+
+Implement idempotent occurrence generation.
+
+Acceptance:
+
+- no duplicate occurrences;
+- future calendar displays payments;
+- HARD classification is preserved.
+
+---
+
+# M7 — Debts
+
+STATUS: TODO
+
+Implement debt model:
+
+- name;
+- original amount;
+- current amount;
+- catch-up amount;
+- schedule;
+- minimum payment;
+- priority;
+- due dates;
+- notes.
+
+Implement debt payments.
+
+Acceptance:
+
+- repayment history auditable;
+- calculations tested;
+- partial payment supported.
+
+---
+
+# M8 — Goals
+
+STATUS: TODO
+
+Implement:
+
+- name;
+- description;
+- target amount;
+- deadline;
+- priority;
+- required/optional semantics;
+- contributions.
+
+Acceptance:
+
+- progress correct;
+- deadlines visible;
+- description available to AI snapshot/tooling.
+
+---
+
+# M9 — Protected envelopes
+
+STATUS: TODO
+
+Implement budget envelopes/reserves.
+
+Support:
+
+HARD
+NEGOTIABLE
+FLEXIBLE
+
+Financial Engine must calculate:
+
+available cash
+protected amount
+discretionary amount
+
+Acceptance:
+
+AI-independent tests prove HARD money cannot be allocated elsewhere.
+
+---
+
+# M10 — Dashboard
+
+STATUS: TODO
+
+Build mobile dashboard showing:
+
+- current cash;
+- protected money;
+- discretionary money;
+- income in transit;
+- weekly earned;
+- monthly earned;
+- weekly expenses;
+- monthly expenses;
+- nearest payments;
+- debts;
+- goals;
+- alerts.
+
+No heavy charting required.
+
+Prioritize useful financial numbers.
+
+---
+
+# M11 — Planning cycles
+
+STATUS: TODO
+
+Implement:
+
+- current planning cycle;
+- opening balance;
+- expected inflows;
+- obligations;
+- allocations;
+- remaining money.
+
+Do not hardcode Thursday.
+
+User can define cycle boundaries/payment cadence.
+
+---
+
+# M12 — Financial simulation engine
+
+STATUS: TODO
+
+Implement deterministic simulation.
+
+Examples:
+
+simulate paying Debt A
+simulate closing Debt B
+simulate funding goal
+simulate reducing negotiable expense
+compare resulting free balance
+
+AI must consume this engine instead of performing authoritative arithmetic itself.
+
+Extensive unit tests required.
+
+---
+
+# M13 — AI infrastructure
+
+STATUS: TODO
+
+Implement:
+
+- AIProvider abstraction;
+- OpenAI provider;
+- model configuration;
+- token/cost logging;
+- structured outputs;
+- FinancialSnapshot builder;
+- typed AI tools;
+- response validation.
+
+Do not build full chat before snapshot/tools are tested.
+
+---
+
+# M14 — AI adviser/chat
+
+STATUS: TODO
+
+Implement mobile AI chat.
+
+Context:
+
+- system financial policy;
+- FinancialSnapshot;
+- structured conversation summary;
+- recent conversation window.
+
+Implement tools.
+
+AI should answer questions such as:
+
+- What should I pay this week?
+- Can I spend X today?
+- Should I partially repay this debt?
+- Which obligation should I address first?
+- Can I reduce any negotiable expense?
+
+AI proposal must remain a draft.
+
+---
+
+# M15 — AI weekly budgeting
+
+STATUS: TODO
+
+Implement:
+
+Generate Budget
+
+AI returns structured proposed allocations.
+
+Backend validates proposal.
+
+UI displays:
+
+- proposed allocations;
+- explanations;
+- alternatives;
+- warnings;
+- unallocated amount.
+
+User can:
+
+approve
+reject
+edit
+discuss
+
+Only explicit approval creates real allocations.
+
+---
+
+# M16 — AI conversation compression
+
+STATUS: TODO
+
+Implement structured summaries.
+
+Avoid infinite chat history in prompts.
+
+Measure token usage.
+
+Acceptance:
+
+long-running conversation remains useful without resending entire history.
+
+---
+
+# M17 — AI eval suite
+
+STATUS: TODO
+
+Create at least 40 realistic scenarios.
+
+Must include:
+
+- HARD expenses;
+- debt partial payments;
+- competing deadlines;
+- insufficient money;
+- future income;
+- overdue debts;
+- negotiable expenses;
+- goals;
+- contradictory priorities.
+
+Add deterministic assertions where possible.
+
+Prompt/policy changes must run against evals.
+
+---
+
+# M18 — Notifications
+
+STATUS: TODO
+
+Implement PWA and Web Push.
+
+Notifications:
+
+- upcoming HARD obligation;
+- insufficient reserve;
+- overdue payment;
+- expected incoming payment;
+- delayed payment;
+- weekly budget warning.
+
+---
+
+# M19 — Transaction import
+
+STATUS: TODO
+
+Start with:
+
+CSV
+manual statement import
+
+Implement:
+
+normalization
+deduplication
+matching
+classification
+
+AI categorization only when deterministic matching is insufficient.
+
+---
+
+# M20 — Bank provider architecture
+
+STATUS: TODO
+
+Implement BankProvider interface.
+
+Do not tightly couple financial domain to any individual Russian bank API.
+
+Add direct providers only after verifying practical API availability and authorization requirements.
+
+---
+
+# M21 — Security hardening
+
+STATUS: TODO
+
+Review:
+
+- secrets;
+- permissions;
+- API routes;
+- rate limiting;
+- prompt injection;
+- external transaction text;
+- database exposure;
+- Caddy configuration;
+- headers;
+- audit log.
+
+Run independent security review.
+
+---
+
+# M22 — Reliability
+
+STATUS: TODO
+
+Add:
+
+- backup automation;
+- restore procedure;
+- health checks;
+- structured logging;
+- error monitoring;
+- job monitoring.
+
+Test restore from backup.
+
+---
+
+# M23 — Production deployment
+
+STATUS: TODO
+
+Deploy to VPS.
+
+Docker Compose:
+
+caddy
+web
+worker
+postgres
+
+Verify HTTPS.
+
+Protect initial single-user deployment from public access.
+
+Run production smoke tests.
+
+---
+
+# M24 — Final product audit
+
+STATUS: TODO
+
+Perform independent architecture and code review.
+
+Review:
+
+- financial correctness;
+- AI safety;
+- UX;
+- database integrity;
+- security;
+- test gaps;
+- dead code;
+- token cost;
+- error handling.
+
+Fix Critical and High findings.
+
+Run entire suite.
+
+Declare v1 only after final audit succeeds.

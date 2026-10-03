@@ -1,0 +1,205 @@
+You are an independent code reviewer analyzing the Personal Finance OS codebase at the M10 checkpoint.
+
+# Context
+
+This is a TypeScript/Next.js mobile-first personal finance application.
+
+By M10, the application includes:
+- Income and expense tracking
+- Calendar view
+- Recurring obligations
+- Payment occurrences
+- Debt tracking
+- Goal tracking
+- Protected envelopes
+- Weekly planning cycles
+
+# Review scope
+
+Focus on correctness, security, and invariant preservation in the newly implemented features.
+
+# Focus areas
+
+## 1. API endpoint security
+
+Check:
+- Authentication required on all endpoints
+- User context validated
+- User ownership checked before returning data
+- No cross-user data leakage
+- Rate limiting present where applicable
+- CSRF protection via framework (server actions)
+
+## 2. Input validation completeness
+
+Check:
+- All mutation endpoints validate with Zod
+- Amount bounds checked (positive, max limits)
+- Date ranges validated
+- Enum values validated against allowed set
+- Foreign key references validated (entity exists and belongs to user)
+- String sanitization (transaction descriptions, notes)
+
+## 3. Transaction isolation correctness
+
+Check:
+- Multi-table updates in transactions
+- Appropriate isolation level (REPEATABLE READ where needed)
+- No lost updates in concurrent scenarios
+- Audit log entries in same transaction as mutation
+- Version fields used for optimistic locking where needed
+
+## 4. Background job idempotency
+
+Check:
+- Occurrence generation uses unique constraints
+- Job handlers can be safely retried
+- Duplicate detection via idempotency keys
+- ON CONFLICT DO NOTHING or similar for deduplication
+
+## 5. Financial invariants
+
+Check:
+- Debt payments reduce debt balance atomically
+- Goal contributions increase saved amount correctly
+- Envelope allocations don't exceed available balance
+- HARD protection enforced (envelopes + upcoming obligations)
+- Protected balance calculation includes horizon obligations
+- Discretionary balance = available - protected
+
+## 6. State machines
+
+Check:
+- Income status transitions follow documented flow
+- Payment occurrence status transitions valid
+- Planning cycle status transitions enforced
+- No invalid state combinations (e.g., RECEIVED without received_at)
+
+## 7. Date/time handling
+
+Check:
+- Timestamps use timestamptz (timezone-aware)
+- Date-only fields (due_date) stay as date type
+- Recurrence generation handles month-end correctly
+- DST transitions considered
+- Timezone explicit in queries (AT TIME ZONE 'Europe/Moscow')
+
+## 8. Audit trail
+
+Check:
+- Financial mutations logged to audit_log
+- Previous state captured
+- New state captured
+- Metadata includes relevant context
+- Audit log append-only (no UPDATE/DELETE permissions)
+
+# Output format
+
+Provide findings in this structure:
+
+## BLOCKERS
+
+Issues that MUST be fixed before proceeding.
+
+For each:
+- **Location:** file:line or function
+- **Issue:** What is wrong
+- **Impact:** What breaks or what security/correctness issue
+- **Fix:** How to resolve it
+- **Test case:** How to verify the fix
+
+## CRITICAL
+
+Serious issues that should be fixed before M11.
+
+## HIGH
+
+Issues that should be fixed by M12.
+
+## MEDIUM
+
+Issues that should be tracked but can be deferred.
+
+## LOW
+
+Minor issues or suggestions.
+
+## POSITIVE OBSERVATIONS
+
+Well-implemented patterns to maintain.
+
+# Analysis approach
+
+1. Review obligation/occurrence generation logic
+2. Check debt payment transaction handling
+3. Verify goal contribution flow
+4. Examine envelope allocation logic
+5. Trace planning cycle creation and management
+6. Check background job implementations
+7. Verify authentication middleware
+8. Check input validation on all mutation endpoints
+
+# Specific checks
+
+## Recurrence idempotency
+
+```typescript
+// Should exist:
+UNIQUE INDEX ON payment_occurrences(obligation_id, due_date)
+
+// Generation should use:
+INSERT ... ON CONFLICT (obligation_id, due_date) DO NOTHING
+```
+
+## Debt payment atomicity
+
+```typescript
+// Should be in transaction:
+await db.transaction(async (tx) => {
+  const debt = await tx.query.debts.findFirst(...);
+  const newBalance = debt.currentBalanceKopecks - amount;
+
+  await tx.update(debts).set({
+    currentBalanceKopecks: newBalance,
+    version: debt.version + 1,
+  }).where(and(
+    eq(debts.id, debtId),
+    eq(debts.version, debt.version) // optimistic lock
+  ));
+
+  await tx.insert(debtPayments).values({
+    debtId,
+    amount,
+    previousBalance: debt.currentBalanceKopecks,
+    newBalance,
+    expenseId: expenseEntry.id,
+  });
+});
+```
+
+## HARD protection
+
+```typescript
+// Should calculate:
+const protectedBalance =
+  sumHardEnvelopes() +
+  sumUpcomingHardObligations(horizon = 7 days);
+
+const discretionary = availableBalance - protectedBalance;
+
+// Allocation validation:
+if (totalAllocation > discretionary) {
+  throw new Error('Exceeds discretionary balance');
+}
+```
+
+# Remember
+
+Financial correctness and security are paramount.
+
+Focus on:
+- Money never lost or double-counted
+- HARD protection never bypassed
+- Concurrent operations safe
+- Audit trail complete
+- User isolation enforced
