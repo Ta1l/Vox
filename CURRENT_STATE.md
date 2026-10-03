@@ -151,6 +151,12 @@ provider abstraction with deterministic Financial Engine
 - `/api/envelopes`, `/api/financial-summary`, and mobile `/envelopes` flow
 - Quality gate passed: typecheck, lint, 65 unit tests, production build, 6 mobile Playwright tests
 
+**M10 - Dashboard:** COMPLETE ✓
+- Deterministic dashboard service/API combines financial snapshot, weekly/monthly earned income and expenses, nearest payments, active debts, active goals, and alerts
+- Mobile dashboard renders current cash, protected/discretionary funds, income in transit, period totals, obligations, debts, goals, and loading/error states
+- UTC date boundaries include the full current day; all queries remain user-scoped
+- Quality gate passed: typecheck, lint, 66 unit tests, production build, 6 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -191,19 +197,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 10:** IN PROGRESS
+**Milestone 11:** TODO
 
-Mobile dashboard with deterministic cash, protection, discretionary, income, expenses, obligations, debts, goals, and alerts.
+Planning cycles with configurable boundaries, opening balance, expected inflows, obligations, allocations, and remaining money.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M9 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M10 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M10 — Dashboard
+After review: M11 — Planning cycles
 
 See TASKS.md and AUTOPILOT.md.
 

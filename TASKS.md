@@ -241,7 +241,7 @@ Acceptance:
 
 **QUALITY GATE:** typecheck, lint, 54 unit tests, production build, and 3 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: 460a57b
 
 ---
 
@@ -271,7 +271,7 @@ Acceptance:
 
 **QUALITY GATE:** typecheck, lint, 60 unit tests, production build, and 4 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: 2eeaac2
 
 ---
 
@@ -297,7 +297,7 @@ Acceptance:
 
 **QUALITY GATE:** typecheck, lint, 63 unit tests, production build, and 5 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: 7909d28
 
 ---
 
@@ -325,13 +325,13 @@ AI-independent tests prove HARD money cannot be allocated elsewhere. ✓
 
 **QUALITY GATE:** typecheck, lint, 65 unit tests, production build, and 6 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: e4d391a
 
 ---
 
 # M10 — Dashboard
 
-STATUS: IN PROGRESS
+STATUS: COMPLETE ✓
 
 Build mobile dashboard showing:
 
@@ -351,6 +351,18 @@ Build mobile dashboard showing:
 No heavy charting required.
 
 Prioritize useful financial numbers.
+
+Implemented:
+
+- deterministic dashboard snapshot/API with current cash, protected, discretionary, and IN_TRANSIT income;
+- UTC week/month earned-income and expense totals with current-day-inclusive boundaries;
+- nearest pending/overdue payments, active debts, active goals, and deterministic alerts;
+- mobile dashboard cards and lists with loading/error states and no heavy charting;
+- regression coverage for date boundaries, ownership-scoped entities, transit income, and dashboard aggregation.
+
+**QUALITY GATE:** typecheck, lint, 66 unit tests, production build, and 6 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 
