@@ -303,7 +303,7 @@ Git commit: pending
 
 # M9 — Protected envelopes
 
-STATUS: IN PROGRESS
+STATUS: COMPLETE ✓
 
 Implement budget envelopes/reserves.
 
@@ -321,13 +321,17 @@ discretionary amount
 
 Acceptance:
 
-AI-independent tests prove HARD money cannot be allocated elsewhere.
+AI-independent tests prove HARD money cannot be allocated elsewhere. ✓
+
+**QUALITY GATE:** typecheck, lint, 65 unit tests, production build, and 6 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 
 # M10 — Dashboard
 
-STATUS: TODO
+STATUS: IN PROGRESS
 
 Build mobile dashboard showing:
 

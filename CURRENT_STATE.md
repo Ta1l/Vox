@@ -4,7 +4,7 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M8 COMPLETE — QUALITY GATE PASSED — M9 IN PROGRESS
+STATUS: M9 COMPLETE — QUALITY GATE PASSED — M10 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -143,6 +143,14 @@ provider abstraction with deterministic Financial Engine
 - Ownership-scoped goals/contributions APIs and mobile `/goals` flow
 - Quality gate passed: typecheck, lint, 63 unit tests, production build, 5 mobile Playwright tests
 
+**M9 - Protected envelopes:** COMPLETE ✓
+- Envelope schema/migration (`drizzle/0009_useful_loa.sql`) with HARD/NEGOTIABLE/FLEXIBLE protection
+- Deterministic financial snapshot: available cash, in-transit income, protected, HARD-protected, discretionary
+- Funding constrained by discretionary balance; envelope spending cannot exceed funded amount
+- Financial tests prove IN_TRANSIT is excluded and HARD reserves cannot be allocated elsewhere
+- `/api/envelopes`, `/api/financial-summary`, and mobile `/envelopes` flow
+- Quality gate passed: typecheck, lint, 65 unit tests, production build, 6 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -183,19 +191,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 9:** IN PROGRESS
+**Milestone 10:** IN PROGRESS
 
-Protected envelopes/reserves and deterministic available/protected/discretionary balances.
+Mobile dashboard with deterministic cash, protection, discretionary, income, expenses, obligations, debts, goals, and alerts.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M8 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M9 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M9 — Protected envelopes
+After review: M10 — Dashboard
 
 See TASKS.md and AUTOPILOT.md.
 

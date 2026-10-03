@@ -10,6 +10,7 @@ const navItems = [
   { href: "/expenses", label: "Расходы", icon: "💸" },
   { href: "/debts", label: "Долги", icon: "📉" },
   { href: "/goals", label: "Цели", icon: "🎯" },
+  { href: "/envelopes", label: "Резервы", icon: "🛡️" },
 ];
 
 export default function BottomNav() {

@@ -1,0 +1,4 @@
+import { NextRequest, NextResponse } from "next/server"; import { z } from "zod"; import * as service from "@/lib/domain/envelopes/envelopeService";
+const userId = "00000000-0000-0000-0000-000000000001"; const schema = z.object({ name: z.string().trim().min(1).max(256), description: z.string().optional(), targetAmountKopecks: z.number().int().nonnegative().optional(), protectionLevel: z.enum(["HARD", "NEGOTIABLE", "FLEXIBLE"]).optional() });
+export async function GET() { return NextResponse.json(await service.getEnvelopes(userId)); }
+export async function POST(request: NextRequest) { try { return NextResponse.json(await service.createEnvelope({ ...schema.parse(await request.json()), userId }), { status: 201 }); } catch (e) { return NextResponse.json({ message: e instanceof Error ? e.message : "Invalid input" }, { status: 400 }); } }
