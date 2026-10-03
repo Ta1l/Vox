@@ -425,13 +425,13 @@ Implemented:
 
 **FINANCIAL ENGINE QUALITY GATE:** typecheck, lint, 80 unit/integration tests, production build, 7 mobile Playwright tests, and specialized deterministic financial audit passed. Independent Opus audit remains recommended before production release.
 
-Git commit: pending
+Git commit: 49f26a6
 
 ---
 
 # M13 — AI infrastructure
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement:
 
@@ -445,6 +445,18 @@ Implement:
 - response validation.
 
 Do not build full chat before snapshot/tools are tested.
+
+Implemented:
+
+- server-side AIProvider abstraction and OpenAI Responses API provider using strict structured JSON schema output;
+- deterministic FinancialSnapshot builder with stable snapshot version and compact dashboard-backed context;
+- user-bound typed tools for snapshots and simulations; no unrestricted SQL or direct LLM writes;
+- `ai_usage_log` migration/service with token totals and optional configured cost estimates;
+- runtime schema validation, malformed-output rejection, missing-usage rejection, secret-safe errors, and provider tests.
+
+**QUALITY GATE:** typecheck, lint, 87 unit/integration tests, production build, and 7 mobile Playwright tests passed. OpenAI API was not called without a configured key. Independent Opus audit remains recommended before production release.
+
+Git commit: pending
 
 ---
 

@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Read M13 AI infrastructure requirements and implement provider abstraction, structured outputs, FinancialSnapshot, typed tools, and cost logging without unrestricted SQL.
+Read M14 AI adviser/chat requirements and implement bounded server-side conversation context with draft-only AI responses.
 
 ## Current Phase
-Phase 4 — M13 AI infrastructure
+Phase 4 — M14 AI adviser/chat
 
 ## Phases
 
@@ -35,6 +35,7 @@ Phase 4 — M13 AI infrastructure
 - [x] Implement M10 deterministic mobile dashboard
 - [x] Implement M11 planning cycles and allocations
 - [x] Implement M12 deterministic financial simulation and financial audit
+- [x] Implement M13 AI infrastructure with structured output and usage logging
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately

@@ -170,6 +170,13 @@ provider abstraction with deterministic Financial Engine
 - Added DB-backed integration and adversarial/property-style tests, plus concurrency audit coverage for user-level financial mutations
 - Quality gate passed: typecheck, lint, 80 unit/integration tests, production build, 7 mobile Playwright tests, specialized financial audit
 
+**M13 - AI infrastructure:** COMPLETE ✓
+- Added server-only AIProvider/OpenAI Responses implementation with strict structured output and runtime schema validation
+- Added compact deterministic FinancialSnapshot with stable version hash and user-bound typed tools for snapshot/simulation
+- Added `ai_usage_log` schema/migration, token/cost recording, and no-key/no-secret tests
+- OpenAI API was not called in this environment because no API key was provided
+- Quality gate passed: typecheck, lint, 87 unit/integration tests, production build, 7 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -210,19 +217,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 13:** TODO
+**Milestone 14:** TODO
 
-AI infrastructure: provider abstraction, structured outputs, FinancialSnapshot, typed tools, and cost logging.
+AI adviser/chat with bounded context and draft-only responses.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M12 financial-engine quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M13 AI infrastructure quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M13 — AI infrastructure
+After review: M14 — AI adviser/chat
 
 See TASKS.md and AUTOPILOT.md.
 
