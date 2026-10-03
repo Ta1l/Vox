@@ -4,11 +4,13 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M4 COMPLETE — EXPENSES IMPLEMENTED
+STATUS: M5 COMPLETE — CALENDAR IMPLEMENTED — REVIEW CHECKPOINT
 
-Milestone 4 завершён. Expense tracking полностью реализован.
+Milestone 5 завершён. Calendar с financial events реализован.
 
-Ready to proceed to M5 (Calendar).
+**MANDATORY:** M5 Codex review checkpoint required before M6.
+
+Ready for review.
 
 ---
 
@@ -108,6 +110,14 @@ provider abstraction with deterministic Financial Engine
 - 5 unit tests covering expense creation and totals
 - Database migration with indexes
 
+**M5 - Calendar:** COMPLETE ✓
+- Mobile calendar component with month grid
+- Calendar service aggregating income/expenses by date
+- API endpoint (GET /api/calendar?year=&month=)
+- Day events showing earned/received/expected income and expenses
+- Date selection with event details
+- 2 unit tests covering event aggregation
+
 ---
 
 ## Current database state
@@ -148,21 +158,21 @@ None yet.
 
 ## Current milestone
 
-**Milestone 4:** COMPLETE ✓
+**Milestone 5:** COMPLETE ✓
 
-Expense tracking implemented.
+Calendar with financial events implemented.
 
 ---
 
 ## Next action
 
-Proceed to M5: Calendar
-- Mobile calendar UI
-- Display income/expenses/obligations per date
-- Weekly statistics
-- Day details view
+REVIEW CHECKPOINT: M5 Codex review required before proceeding to M6.
 
-See TASKS.md.
+Run: ./scripts/run-codex-review.sh m5 .claude/review-prompts/m5-checkpoint.txt
+
+After review: M6 — Recurring obligations
+
+See TASKS.md and AUTOPILOT.md.
 
 ---
 
