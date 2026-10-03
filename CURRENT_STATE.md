@@ -4,11 +4,11 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M2 COMPLETE — DATABASE AND MONEY UTILITIES READY
+STATUS: M3 COMPLETE — INCOME TRACKING IMPLEMENTED
 
-Milestone 2 завершён. PostgreSQL database с Money utilities реализованы.
+Milestone 3 завершён. Income tracking с state lifecycle полностью реализован.
 
-Ready to proceed to M3 (Income tracking).
+Ready to proceed to M4 (Expenses).
 
 ---
 
@@ -89,6 +89,16 @@ provider abstraction with deterministic Financial Engine
 - Users table migration
 - Database connection tested
 
+**M3 - Income tracking:** COMPLETE ✓
+- Income entry schema with state machine (EARNED/IN_TRANSIT/RECEIVED/DELAYED/CANCELLED)
+- State transition validation (RULE-I3)
+- Income domain service
+- Financial invariants: RULE-I1 (received only counts), RULE-I2 (in-transit separate)
+- API endpoints (POST /api/income, GET /api/income)
+- Mobile income form
+- 11 comprehensive tests covering state transitions and financial rules
+- Database migration with constraints and indexes
+
 ---
 
 ## Current database state
@@ -129,19 +139,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 2:** COMPLETE ✓
+**Milestone 3:** COMPLETE ✓
 
-PostgreSQL database with Drizzle ORM and Money utilities.
+Income tracking with state lifecycle implemented.
 
 ---
 
 ## Next action
 
-Proceed to M3: Income tracking
-- Income entry schema
-- IN_TRANSIT state lifecycle
-- Mobile income form
-- Income does not increase balance until RECEIVED
+Proceed to M4: Expenses
+- Expense entry schema
+- Categories
+- Mobile expense form
+- Expense reduces available balance immediately
 
 See TASKS.md.
 

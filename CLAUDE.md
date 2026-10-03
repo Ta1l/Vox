@@ -54,6 +54,16 @@ AI must NOT bypass financial invariants.
 
 ---
 
+# Ponytail Policy
+
+- Ponytail full is used throughout implementation.
+- Apply YAGNI and reuse existing/native/platform functionality before adding code or dependencies.
+- Ponytail must never override documented financial invariants, security requirements, validation, auditability, transactional correctness, accessibility or required tests.
+- Do not remove required architecture merely to reduce LOC.
+- Prefer the smallest implementation that fully satisfies DOMAIN_RULES.md and Definition of Done.
+
+---
+
 # Money rules
 
 NEVER use JavaScript floating point values as the canonical representation of money.

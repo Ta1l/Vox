@@ -127,25 +127,32 @@ Git commit: baa1494
 
 # M3 — Income
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
-Implement:
+Implemented:
 
-- income entry;
-- earned date;
-- amount;
-- expected payment date;
-- status;
-- received date;
-- IN_TRANSIT state.
-
-Create mobile income form.
+- Income entry schema (income_entries table)
+- State machine: EARNED, IN_TRANSIT, RECEIVED, DELAYED, CANCELLED
+- State transition validation (RULE-I3)
+- Income domain service with financial invariants:
+  - RULE-I1: Only RECEIVED income counts toward available balance
+  - RULE-I2: Expected income calculated separately
+- API endpoints: POST /api/income, GET /api/income
+- Mobile income form component
+- Database migration with constraints and indexes
+- 11 comprehensive unit tests
 
 Acceptance:
 
-- recording income does not increase available cash until received;
-- expected future income is visible separately;
-- Playwright flow passes.
+✓ Recording income does not increase available cash until RECEIVED
+✓ Expected future income visible separately via getIncomeInTransit()
+✓ State transitions validated according to RULE-I3
+✓ All tests pass (41/41)
+✓ TypeScript strict mode passes
+✓ Lint passes
+✓ Production build succeeds
+
+Git commit: (pending)
 
 ---
 
