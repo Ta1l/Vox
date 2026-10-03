@@ -21,12 +21,11 @@ export async function getMonthEvents(
   const end = new Date(year, month, 0, 23, 59, 59);
 
   const [incomes, expenses] = await Promise.all([
+    // Income can produce events on earnedAt, expectedAt, and receivedAt.
+    // Fetch the user's entries once so events are not lost when those dates
+    // fall in different months.
     db.query.incomeEntries.findMany({
-      where: and(
-        eq(incomeEntries.userId, userId),
-        gte(incomeEntries.earnedAt, start),
-        lte(incomeEntries.earnedAt, end)
-      ),
+      where: eq(incomeEntries.userId, userId),
     }),
     db.query.expenseEntries.findMany({
       where: and(
@@ -39,9 +38,7 @@ export async function getMonthEvents(
 
   const days = new Map<string, DayEvent>();
 
-  for (const income of incomes) {
-    const dateKey = income.earnedAt.toISOString().split("T")[0];
-    const day = days.get(dateKey) || {
+  const ensureDay = (dateKey: string) => days.get(dateKey) || {
       date: dateKey,
       earnedIncome: 0,
       receivedIncome: 0,
@@ -49,26 +46,39 @@ export async function getMonthEvents(
       expenses: 0,
     };
 
-    day.earnedIncome = money.add(day.earnedIncome, income.amountKopecks);
+  const inMonth = (dateKey: string) => dateKey >= startDate && dateKey <= endDate;
+  const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+  const endDate = `${year}-${String(month).padStart(2, "0")}-${String(new Date(year, month, 0).getDate()).padStart(2, "0")}`;
 
-    if (income.status === "RECEIVED") {
-      day.receivedIncome = money.add(day.receivedIncome, income.amountKopecks);
-    } else if (income.status === "IN_TRANSIT" || income.status === "EARNED") {
-      day.expectedIncome = money.add(day.expectedIncome, income.amountKopecks);
+  for (const income of incomes) {
+    const earnedDate = income.earnedAt.toISOString().split("T")[0];
+    if (inMonth(earnedDate)) {
+      const day = ensureDay(earnedDate);
+      day.earnedIncome = money.add(day.earnedIncome, income.amountKopecks);
+      days.set(earnedDate, day);
     }
 
-    days.set(dateKey, day);
+    if (income.status === "RECEIVED" && income.receivedAt) {
+      const receivedDate = income.receivedAt.toISOString().split("T")[0];
+      if (inMonth(receivedDate)) {
+        const day = ensureDay(receivedDate);
+        day.receivedIncome = money.add(day.receivedIncome, income.amountKopecks);
+        days.set(receivedDate, day);
+      }
+    } else if (income.status === "IN_TRANSIT" || income.status === "EARNED" || income.status === "DELAYED") {
+      // Entries without an expected date remain visible on their earned date.
+      const expectedDate = income.expectedAt ?? earnedDate;
+      if (!inMonth(expectedDate)) continue;
+      const day = ensureDay(expectedDate);
+      day.expectedIncome = money.add(day.expectedIncome, income.amountKopecks);
+      days.set(expectedDate, day);
+    }
   }
 
   for (const expense of expenses) {
     const dateKey = expense.expenseDate.toISOString().split("T")[0];
-    const day = days.get(dateKey) || {
-      date: dateKey,
-      earnedIncome: 0,
-      receivedIncome: 0,
-      expectedIncome: 0,
-      expenses: 0,
-    };
+    if (!inMonth(dateKey)) continue;
+    const day = ensureDay(dateKey);
 
     day.expenses = money.add(day.expenses, expense.amountKopecks);
     days.set(dateKey, day);

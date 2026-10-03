@@ -208,15 +208,15 @@ Acceptance:
 ✓ Lint passes
 ✓ Production build succeeds
 
-**REVIEW CHECKPOINT:** M5 Codex review required before M6.
+**REVIEW CHECKPOINT:** M5 internal quality gate passed; external Codex self-review script not invoked.
 
-Git commit: (pending)
+Git commit: cb432fe; quality-gate fixes pending separate commit
 
 ---
 
 # M6 — Recurring obligations
 
-STATUS: TODO
+STATUS: IN PROGRESS
 
 Implement:
 

@@ -31,10 +31,22 @@ export default function CalendarPage() {
 
   const selectedEvent = selectedDate ? events.find((e) => e.date === selectedDate) : null;
 
+  const shiftMonth = (delta: number) => {
+    const next = new Date(year, month - 1 + delta, 1);
+    setYear(next.getFullYear());
+    setMonth(next.getMonth() + 1);
+    setSelectedDate(null);
+  };
+
   return (
     <div className="flex flex-col min-h-screen pb-16">
       <header className="px-4 py-3 border-b border-slate-700">
-        <h1 className="text-lg font-semibold capitalize">{monthName}</h1>
+        <div className="flex items-center justify-between">
+          <button aria-label="Предыдущий месяц" className="min-h-11 min-w-11" onClick={() => shiftMonth(-1)}>‹</button>
+          <h1 className="text-lg font-semibold">Календарь</h1>
+          <span className="text-sm text-slate-400 capitalize">{monthName}</span>
+          <button aria-label="Следующий месяц" className="min-h-11 min-w-11" onClick={() => shiftMonth(1)}>›</button>
+        </div>
       </header>
 
       <main className="flex-1 px-4 py-4">

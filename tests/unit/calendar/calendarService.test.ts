@@ -88,5 +88,31 @@ describe("Calendar service", () => {
       expect(event?.receivedIncome).toBe(money.toKopecks(2000));
       expect(event?.expectedIncome).toBe(money.toKopecks(1000));
     });
+
+    it("should place expected and received events on their settlement dates", async () => {
+      await incomeService.createIncome({
+        userId: testUserId,
+        amountKopecks: 30000,
+        earnedAt: new Date("2026-01-31T12:00:00Z"),
+        expectedAt: "2026-02-03",
+      });
+
+      const received = await incomeService.createIncome({
+        userId: testUserId,
+        amountKopecks: 40000,
+        earnedAt: new Date("2026-01-31T12:00:00Z"),
+      });
+      await incomeService.updateIncomeStatus({
+        incomeId: received.id,
+        userId: testUserId,
+        newStatus: "RECEIVED",
+        receivedAt: new Date("2026-02-04T12:00:00Z"),
+      });
+
+      const events = await calendarService.getMonthEvents(testUserId, 2026, 2);
+      expect(events.find((e) => e.date === "2026-02-03")?.expectedIncome).toBe(30000);
+      expect(events.find((e) => e.date === "2026-02-04")?.receivedIncome).toBe(40000);
+      expect(events.find((e) => e.date === "2026-01-31")).toBeUndefined();
+    });
   });
 });

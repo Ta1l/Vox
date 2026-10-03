@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import * as money from "@/lib/money";
-
 interface DayEvent {
   date: string;
   earnedIncome: number;
