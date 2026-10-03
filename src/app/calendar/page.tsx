@@ -10,6 +10,7 @@ interface DayEvent {
   receivedIncome: number;
   expectedIncome: number;
   expenses: number;
+  scheduledPayments: Array<{ name: string; amountKopecks: number; status: string; protectionLevel: string }>;
 }
 
 export default function CalendarPage() {
@@ -83,6 +84,12 @@ export default function CalendarPage() {
                 <span>{(selectedEvent.expenses / 100).toFixed(2)} ₽</span>
               </div>
             )}
+            {selectedEvent.scheduledPayments.map((payment) => (
+              <div key={`${payment.name}-${payment.amountKopecks}-${payment.status}`} className="flex justify-between text-amber-300">
+                <span>{payment.name} ({payment.status === "PAID" ? "оплачено" : payment.status === "OVERDUE" ? "просрочено" : "платёж"})</span>
+                <span>{(payment.amountKopecks / 100).toFixed(2)} ₽</span>
+              </div>
+            ))}
           </div>
         )}
       </main>

@@ -4,7 +4,7 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M5 COMPLETE — QUALITY GATE PASSED — M6 IN PROGRESS
+STATUS: M6 COMPLETE — QUALITY GATE PASSED — M7 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -116,6 +116,17 @@ provider abstraction with deterministic Financial Engine
 - Date selection with event details
 - 2 unit tests covering event aggregation
 
+**M6 - Recurring obligations:** COMPLETE ✓
+- Recurring obligation schema and migration (`drizzle/0003_third_steve_rogers.sql`)
+- ONE_TIME, DAILY, WEEKLY, BIWEEKLY, MONTHLY, and CUSTOM date generation
+- HARD, NEGOTIABLE, and FLEXIBLE protection inheritance
+- Idempotent occurrence generation with unique obligation/date constraint
+- PAID and OVERDUE transitions with immutable paid state
+- Calendar integration for scheduled payments
+- API endpoints for obligation creation, occurrence listing, and generation
+- 5 obligation tests plus calendar regression coverage
+- Quality gate passed: typecheck, lint, 54 unit tests, production build, 3 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -156,19 +167,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 6:** IN PROGRESS
+**Milestone 7:** IN PROGRESS
 
-Recurring obligations and idempotent payment occurrences.
+Debts and debt payments.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M5 internal quality gate passed.
+REVIEW CHECKPOINT: M6 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M6 — Recurring obligations
+After review: M7 — Debts
 
 See TASKS.md and AUTOPILOT.md.
 

@@ -6,6 +6,7 @@ interface DayEvent {
   receivedIncome: number;
   expectedIncome: number;
   expenses: number;
+  scheduledPayments: Array<{ name: string; amountKopecks: number; status: string; protectionLevel: string }>;
 }
 
 interface CalendarProps {
@@ -65,7 +66,7 @@ export default function Calendar({ year, month, events, onDateClick }: CalendarP
             }
 
             const { day, dateStr, event } = cell;
-            const hasActivity = event && (event.earnedIncome > 0 || event.expenses > 0);
+            const hasActivity = event && (event.earnedIncome > 0 || event.expenses > 0 || event.scheduledPayments.length > 0);
 
             return (
               <button
@@ -85,6 +86,9 @@ export default function Calendar({ year, month, events, onDateClick }: CalendarP
                     )}
                     {event.expenses > 0 && (
                       <span className="text-red-400">↑</span>
+                    )}
+                    {event.scheduledPayments.length > 0 && (
+                      <span className="text-amber-400">•</span>
                     )}
                   </div>
                 )}

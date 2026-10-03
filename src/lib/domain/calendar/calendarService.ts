@@ -1,6 +1,7 @@
 import { db } from "@/lib/db/client";
 import { incomeEntries } from "@/lib/db/schema/income";
 import { expenseEntries } from "@/lib/db/schema/expenses";
+import { paymentOccurrences, recurringObligations } from "@/lib/db/schema/obligations";
 import { eq, and, gte, lte } from "drizzle-orm";
 import * as money from "@/lib/money";
 
@@ -10,6 +11,12 @@ export interface DayEvent {
   receivedIncome: money.Money;
   expectedIncome: money.Money;
   expenses: money.Money;
+  scheduledPayments: Array<{
+    name: string;
+    amountKopecks: money.Money;
+    status: "PENDING" | "PAID" | "OVERDUE" | "SKIPPED";
+    protectionLevel: "HARD" | "NEGOTIABLE" | "FLEXIBLE";
+  }>;
 }
 
 export async function getMonthEvents(
@@ -19,8 +26,10 @@ export async function getMonthEvents(
 ): Promise<DayEvent[]> {
   const start = new Date(year, month - 1, 1);
   const end = new Date(year, month, 0, 23, 59, 59);
+  const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+  const endDate = `${year}-${String(month).padStart(2, "0")}-${String(new Date(year, month, 0).getDate()).padStart(2, "0")}`;
 
-  const [incomes, expenses] = await Promise.all([
+  const [incomes, expenses, occurrences] = await Promise.all([
     // Income can produce events on earnedAt, expectedAt, and receivedAt.
     // Fetch the user's entries once so events are not lost when those dates
     // fall in different months.
@@ -34,6 +43,19 @@ export async function getMonthEvents(
         lte(expenseEntries.expenseDate, end)
       ),
     }),
+    db.select({
+      dueDate: paymentOccurrences.dueDate,
+      amountKopecks: paymentOccurrences.amountKopecks,
+      status: paymentOccurrences.status,
+      protectionLevel: paymentOccurrences.protectionLevel,
+      name: recurringObligations.name,
+    }).from(paymentOccurrences)
+      .innerJoin(recurringObligations, eq(paymentOccurrences.obligationId, recurringObligations.id))
+      .where(and(
+        eq(paymentOccurrences.userId, userId),
+        gte(paymentOccurrences.dueDate, startDate),
+        lte(paymentOccurrences.dueDate, endDate),
+      )),
   ]);
 
   const days = new Map<string, DayEvent>();
@@ -44,11 +66,10 @@ export async function getMonthEvents(
       receivedIncome: 0,
       expectedIncome: 0,
       expenses: 0,
+      scheduledPayments: [],
     };
 
   const inMonth = (dateKey: string) => dateKey >= startDate && dateKey <= endDate;
-  const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
-  const endDate = `${year}-${String(month).padStart(2, "0")}-${String(new Date(year, month, 0).getDate()).padStart(2, "0")}`;
 
   for (const income of incomes) {
     const earnedDate = income.earnedAt.toISOString().split("T")[0];
@@ -82,6 +103,17 @@ export async function getMonthEvents(
 
     day.expenses = money.add(day.expenses, expense.amountKopecks);
     days.set(dateKey, day);
+  }
+
+  for (const occurrence of occurrences) {
+    const day = ensureDay(occurrence.dueDate);
+    day.scheduledPayments.push({
+      name: occurrence.name,
+      amountKopecks: occurrence.amountKopecks,
+      status: occurrence.status,
+      protectionLevel: occurrence.protectionLevel,
+    });
+    days.set(occurrence.dueDate, day);
   }
 
   return Array.from(days.values()).sort((a, b) => a.date.localeCompare(b.date));

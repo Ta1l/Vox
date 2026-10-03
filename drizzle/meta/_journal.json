@@ -22,6 +22,20 @@
       "when": 1791017089578,
       "tag": "0002_mute_arclight",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791024356450,
+      "tag": "0003_third_steve_rogers",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791034767574,
+      "tag": "0004_blushing_bulldozer",
+      "breakpoints": true
     }
   ]
 }

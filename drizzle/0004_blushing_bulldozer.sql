@@ -1,0 +1,4 @@
+ALTER TABLE "payment_occurrences" ADD CONSTRAINT "chk_occurrence_positive" CHECK ("payment_occurrences"."amount_kopecks" > 0);--> statement-breakpoint
+ALTER TABLE "payment_occurrences" ADD CONSTRAINT "chk_occurrence_paid_date" CHECK (("payment_occurrences"."status" = 'PAID' AND "payment_occurrences"."paid_at" IS NOT NULL) OR "payment_occurrences"."status" <> 'PAID');--> statement-breakpoint
+ALTER TABLE "recurring_obligations" ADD CONSTRAINT "chk_obligation_positive" CHECK ("recurring_obligations"."amount_kopecks" > 0);--> statement-breakpoint
+ALTER TABLE "recurring_obligations" ADD CONSTRAINT "chk_obligation_date_range" CHECK ("recurring_obligations"."end_date" IS NULL OR "recurring_obligations"."end_date" >= "recurring_obligations"."start_date");

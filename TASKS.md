@@ -210,13 +210,13 @@ Acceptance:
 
 **REVIEW CHECKPOINT:** M5 internal quality gate passed; external Codex self-review script not invoked.
 
-Git commit: cb432fe; quality-gate fixes pending separate commit
+Git commit: c019fc0
 
 ---
 
 # M6 — Recurring obligations
 
-STATUS: IN PROGRESS
+STATUS: COMPLETE ✓
 
 Implement:
 
@@ -235,9 +235,13 @@ Implement idempotent occurrence generation.
 
 Acceptance:
 
-- no duplicate occurrences;
-- future calendar displays payments;
-- HARD classification is preserved.
+- no duplicate occurrences; ✓
+- future calendar displays payments; ✓
+- HARD classification is preserved. ✓
+
+**QUALITY GATE:** typecheck, lint, 54 unit tests, production build, and 3 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 

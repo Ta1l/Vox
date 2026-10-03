@@ -3,6 +3,7 @@ import * as calendarService from "@/lib/domain/calendar/calendarService";
 import * as incomeService from "@/lib/domain/income/incomeService";
 import * as expenseService from "@/lib/domain/expenses/expenseService";
 import * as money from "@/lib/money";
+import * as obligationService from "@/lib/domain/obligations/obligationService";
 import { db } from "@/lib/db/client";
 import { users } from "@/lib/db/schema/users";
 import { incomeEntries } from "@/lib/db/schema/income";
@@ -57,6 +58,7 @@ describe("Calendar service", () => {
       expect(event).toBeDefined();
       expect(event?.earnedIncome).toBe(money.toKopecks(1500));
       expect(event?.expenses).toBe(money.toKopecks(300));
+      expect(event?.scheduledPayments).toEqual([]);
     });
 
     it("should separate received and expected income", async () => {
@@ -113,6 +115,23 @@ describe("Calendar service", () => {
       expect(events.find((e) => e.date === "2026-02-03")?.expectedIncome).toBe(30000);
       expect(events.find((e) => e.date === "2026-02-04")?.receivedIncome).toBe(40000);
       expect(events.find((e) => e.date === "2026-01-31")).toBeUndefined();
+    });
+
+    it("should display scheduled obligation payments", async () => {
+      const obligation = await obligationService.createObligation({
+        userId: testUserId,
+        name: "Rent",
+        amountKopecks: 75000,
+        recurrenceType: "ONE_TIME",
+        protectionLevel: "HARD",
+        startDate: "2026-03-15",
+      });
+      await obligationService.generateOccurrences(obligation.id, testUserId, "2026-03-15");
+
+      const events = await calendarService.getMonthEvents(testUserId, 2026, 3);
+      expect(events.find((e) => e.date === "2026-03-15")?.scheduledPayments).toEqual([
+        { name: "Rent", amountKopecks: 75000, status: "PENDING", protectionLevel: "HARD" },
+      ]);
     });
   });
 });
