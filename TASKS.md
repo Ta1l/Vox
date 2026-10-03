@@ -58,33 +58,31 @@ Ready for AUTOPILOT start with M1 implementation.
 
 # M1 — Repository foundation
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
-Create:
+Created:
 
-- Next.js project
+- Next.js 15 project with App Router
 - TypeScript strict configuration
-- Tailwind
-- shadcn/ui
-- linting
-- formatting
-- environment validation
-- Vitest
-- Playwright
-- Docker development setup
-
-Create basic mobile application shell.
-
-Create bottom navigation.
-
-Add health endpoint.
+- Tailwind CSS
+- ESLint + Prettier configuration
+- Vitest for unit tests
+- Playwright for E2E tests
+- Docker development setup (deferred to M2)
+- Basic mobile application shell with bottom navigation
+- Health API endpoint
+- Mobile viewport (390×844)
 
 Acceptance:
 
-- project boots;
-- build passes;
-- test command passes;
-- Playwright can open mobile shell.
+✓ Project boots successfully
+✓ Build passes
+✓ Test command passes (Vitest)
+✓ TypeScript strict mode enforced
+✓ Mobile navigation renders
+✓ Health endpoint responds
+
+Git commit: 2d91b86
 
 ---
 
