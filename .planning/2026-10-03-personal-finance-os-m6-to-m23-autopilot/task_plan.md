@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Read M11 planning-cycle requirements and implement configurable cycle boundaries, opening balance, inflows, obligations, allocations, and remaining money.
+Read M12 financial simulation requirements and implement deterministic scenario simulation over the existing engine.
 
 ## Current Phase
-Phase 4 — M11 planning cycles
+Phase 4 — M12 financial simulation engine
 
 ## Phases
 
@@ -33,6 +33,7 @@ Phase 4 — M11 planning cycles
 - [x] Implement M8 goals and contributions
 - [x] Implement M9 protected envelopes and financial snapshot
 - [x] Implement M10 deterministic mobile dashboard
+- [x] Implement M11 planning cycles and allocations
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately

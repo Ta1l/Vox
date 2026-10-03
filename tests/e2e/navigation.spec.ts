@@ -56,4 +56,10 @@ test.describe("Mobile Application", () => {
     await page.goto("/envelopes");
     await expect(page.getByRole("heading", { name: "Конверты" })).toBeVisible();
   });
+
+  test("should render planning page", async ({ page }) => {
+    await page.goto("/planning");
+    await expect(page.getByRole("heading", { name: "Планирование" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Начать планирование" })).toBeVisible();
+  });
 });

@@ -157,6 +157,13 @@ provider abstraction with deterministic Financial Engine
 - UTC date boundaries include the full current day; all queries remain user-scoped
 - Quality gate passed: typecheck, lint, 66 unit tests, production build, 6 mobile Playwright tests
 
+**M11 - Planning cycles:** COMPLETE ✓
+- Added `planning_cycles` and `budget_allocations` schema/migration with one ACTIVE cycle per user
+- Cycle creation snapshots available balance and expected income without making IN_TRANSIT spendable
+- Allocation validation reserves pending/overdue obligations, checks target ownership, supports idempotency, and locks the cycle row for concurrent writes
+- Mobile `/planning` page and cycle/allocation APIs are available
+- Quality gate passed: typecheck, lint, 71 unit tests, production build, 7 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -197,19 +204,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 11:** TODO
+**Milestone 12:** TODO
 
-Planning cycles with configurable boundaries, opening balance, expected inflows, obligations, allocations, and remaining money.
+Deterministic financial simulation engine.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M10 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M11 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M11 — Planning cycles
+After review: M12 — Financial simulation engine
 
 See TASKS.md and AUTOPILOT.md.
 

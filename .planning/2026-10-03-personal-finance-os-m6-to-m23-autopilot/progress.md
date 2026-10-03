@@ -61,3 +61,11 @@
 - Quality gate passed: typecheck, lint, 66 unit tests, production build, 6 Playwright tests.
 - Critical review found no BLOCKER/CRITICAL/HIGH issues; independent Opus financial audit remains recommended before production release.
 - Updated `TASKS.md` and `CURRENT_STATE.md`; ready for M11.
+
+### M11 completion
+- Added planning cycle/allocation schema and migration 0010.
+- Implemented deterministic cycle snapshots, expected income, obligation reservation, target ownership, idempotency, and row-locked allocation writes.
+- Added `/planning` UI, planning APIs, and regression/E2E coverage.
+- Quality gate passed: typecheck, lint, 71 unit tests, production build, 7 Playwright tests.
+- Critical review fixed opening-balance misuse and obligation double counting; no remaining BLOCKER/CRITICAL/HIGH findings.
+- Independent Opus financial audit remains recommended before production release.

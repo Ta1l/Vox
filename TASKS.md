@@ -362,13 +362,13 @@ Implemented:
 
 **QUALITY GATE:** typecheck, lint, 66 unit tests, production build, and 6 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: 5360a0f
 
 ---
 
 # M11 — Planning cycles
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement:
 
@@ -382,6 +382,18 @@ Implement:
 Do not hardcode Thursday.
 
 User can define cycle boundaries/payment cadence.
+
+Implemented:
+
+- planning cycle and budget allocation PostgreSQL schema/migration with one ACTIVE cycle per user;
+- immutable date boundaries, opening-balance snapshot, expected-income snapshot, and cycle status transitions;
+- deterministic obligation reservation and allocation validation with ownership checks, idempotency, and row locking;
+- mobile `/planning` flow plus cycle summary/allocation APIs;
+- regression coverage for IN_TRANSIT vs received income, obligations, target ownership, idempotency, and allocation boundaries.
+
+**QUALITY GATE:** typecheck, lint, 71 unit tests, production build, and 7 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 
