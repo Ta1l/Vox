@@ -83,11 +83,12 @@ export async function createAllocation(params: { userId: string; cycleId: string
     if (existing) return existing;
   }
   await assertTarget(params.userId, params.targetType, params.targetId);
-  const snapshot = await getFinancialSnapshot(params.userId);
-  const obligations = await getCycleObligationsTotal(params.userId, cycle);
-  const available = Math.max(0, snapshot.availableCashKopecks - snapshot.protectedAmountKopecks);
   return db.transaction(async (tx) => {
+    await tx.execute(sql`select id from users where id = ${params.userId} for update`);
     await tx.execute(sql`select id from planning_cycles where id = ${cycle.id} for update`);
+    const snapshot = await getFinancialSnapshot(params.userId);
+    const obligations = await getCycleObligationsTotal(params.userId, cycle);
+    const available = Math.max(0, snapshot.availableCashKopecks - snapshot.protectedAmountKopecks);
     if (params.idempotencyKey) {
       const existing = await tx.query.budgetAllocations.findFirst({ where: and(eq(budgetAllocations.cycleId, cycle.id), eq(budgetAllocations.idempotencyKey, params.idempotencyKey)) });
       if (existing) return existing;

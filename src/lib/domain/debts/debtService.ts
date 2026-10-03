@@ -92,6 +92,7 @@ export async function payDebt(params: PayDebtParams) {
   }
   try {
     return await db.transaction(async (tx) => {
+      await tx.execute(sql`select id from users where id = ${params.userId} for update`);
       const debt = await tx.query.debts.findFirst({ where: and(eq(debts.id, params.debtId), eq(debts.userId, params.userId)) });
       if (!debt) throw new Error("Debt not found");
       if (params.amountKopecks > debt.currentBalanceKopecks) throw new Error("Debt payment exceeds current balance");

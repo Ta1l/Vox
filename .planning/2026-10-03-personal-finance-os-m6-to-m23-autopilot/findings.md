@@ -28,3 +28,9 @@
 - Dashboard needs one deterministic server response combining snapshot, earned/expense period totals, pending/overdue occurrences, active debts, goals, and alerts.
 - Period boundaries will be UTC date-only boundaries derived from an explicit `today` (for deterministic tests), with income grouped by `earnedAt` and expenses by `expenseDate`.
 - API routes use the existing development user id pattern; no authentication architecture changes in M10.
+
+## M12 Financial simulation (2026-10-03)
+- M11 is committed as `e78673f`; the first unfinished milestone is M12.
+- The Claude/Opus auditor instructions exist in `.claude/agents/financial-auditor.md`, but this environment offers no callable Claude/Opus integration. Independent audit must remain a pre-production caveat; deterministic adversarial tests are required now.
+- Simulation is read-only: DB-backed snapshot and owned entity IDs are authoritative; inputs are validated in integer kopecks; model-provided arithmetic is never trusted.
+- Need distinguish cash-spending debt payments from goal reservations to avoid falsely counting savings transfer twice.

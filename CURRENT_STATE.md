@@ -164,6 +164,12 @@ provider abstraction with deterministic Financial Engine
 - Mobile `/planning` page and cycle/allocation APIs are available
 - Quality gate passed: typecheck, lint, 71 unit tests, production build, 7 mobile Playwright tests
 
+**M12 - Financial simulation engine:** COMPLETE ✓
+- Added read-only deterministic scenario simulation for debt, goal, and negotiable-obligation decisions
+- Simulation validates integer/safe kopecks, rejects foreign entities and protected-fund spending, preserves IN_TRANSIT separation, and never writes financial records
+- Added DB-backed integration and adversarial/property-style tests, plus concurrency audit coverage for user-level financial mutations
+- Quality gate passed: typecheck, lint, 80 unit/integration tests, production build, 7 mobile Playwright tests, specialized financial audit
+
 ---
 
 ## Current database state
@@ -204,19 +210,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 12:** TODO
+**Milestone 13:** TODO
 
-Deterministic financial simulation engine.
+AI infrastructure: provider abstraction, structured outputs, FinancialSnapshot, typed tools, and cost logging.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M11 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M12 financial-engine quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M12 — Financial simulation engine
+After review: M13 — AI infrastructure
 
 See TASKS.md and AUTOPILOT.md.
 

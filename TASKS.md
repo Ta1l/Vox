@@ -393,13 +393,13 @@ Implemented:
 
 **QUALITY GATE:** typecheck, lint, 71 unit tests, production build, and 7 mobile Playwright tests passed.
 
-Git commit: pending
+Git commit: e78673f
 
 ---
 
 # M12 — Financial simulation engine
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement deterministic simulation.
 
@@ -414,6 +414,18 @@ compare resulting free balance
 AI must consume this engine instead of performing authoritative arithmetic itself.
 
 Extensive unit tests required.
+
+Implemented:
+
+- deterministic read-only scenario engine for debt payments/closure, goal funding, and NEGOTIABLE obligation reductions;
+- integer-kopek validation, safe-integer guards, ownership-scoped DB snapshot loading, and no expected-income spending;
+- obligation allocation de-duplication and protected/HARD-fund rejection;
+- simulation API and adversarial/property-style regression tests;
+- serialized user-level financial mutations for envelope funding, debt payments, expenses, and cycle allocations.
+
+**FINANCIAL ENGINE QUALITY GATE:** typecheck, lint, 80 unit/integration tests, production build, 7 mobile Playwright tests, and specialized deterministic financial audit passed. Independent Opus audit remains recommended before production release.
+
+Git commit: pending
 
 ---
 

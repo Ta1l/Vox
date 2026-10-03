@@ -69,3 +69,15 @@
 - Quality gate passed: typecheck, lint, 71 unit tests, production build, 7 Playwright tests.
 - Critical review fixed opening-balance misuse and obligation double counting; no remaining BLOCKER/CRITICAL/HIGH findings.
 - Independent Opus financial audit remains recommended before production release.
+
+### M12 implementation start
+- Recovered M11 commit and clean code tree (only user `AGENTS.md` and planning control files remain untracked).
+- Read architecture and available financial-auditor instructions; no callable Claude/Opus integration found.
+- Plan: pure typed simulation with DB-backed user-scoped input, adversarial/property-style tests, full quality gate, then specialized financial audit.
+
+### M12 completion
+- Implemented read-only deterministic simulation API/service for debt, goal, and negotiable-obligation scenarios.
+- Added safe integer validation, ownership-scoped snapshot loading, no-write integration coverage, and 80-test full suite.
+- Specialized audit found and fixed concurrent envelope-funding oversubscription by serializing user-level mutations; added regression coverage.
+- Final gate passed: lint, typecheck, 80 tests, build, and 7 Playwright tests.
+- No BLOCKER/CRITICAL/HIGH findings remain. External Claude/Opus audit is unavailable in this environment and remains recommended before production release.

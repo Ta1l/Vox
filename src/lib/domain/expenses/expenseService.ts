@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { expenseEntries, type NewExpenseEntry } from "@/lib/db/schema/expenses";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import * as money from "@/lib/money";
 
 /**
@@ -34,8 +34,11 @@ export async function createExpense(params: CreateExpenseParams) {
     expenseDate: params.expenseDate,
   };
 
-  const [created] = await db.insert(expenseEntries).values(entry).returning();
-  return created;
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select id from users where id = ${params.userId} for update`);
+    const [created] = await tx.insert(expenseEntries).values(entry).returning();
+    return created;
+  });
 }
 
 export async function getExpensesByUser(userId: string, category?: string) {
