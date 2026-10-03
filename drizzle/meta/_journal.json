@@ -57,6 +57,13 @@
       "when": 1791038868739,
       "tag": "0007_perfect_the_liberteens",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791041418498,
+      "tag": "0008_tiresome_jack_power",
+      "breakpoints": true
     }
   ]
 }

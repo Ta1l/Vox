@@ -1,0 +1,11 @@
+"use client";
+import { useEffect, useState } from "react";
+import BottomNav from "@/components/BottomNav";
+
+type Goal = { id: string; name: string; description: string | null; targetAmountKopecks: number; savedAmountKopecks: number; deadline: string | null; status: string };
+export default function GoalsPage() {
+  const [goals, setGoals] = useState<Goal[]>([]); const [name, setName] = useState(""); const [target, setTarget] = useState(""); const [showForm, setShowForm] = useState(false);
+  const load = () => fetch("/api/goals").then((r) => r.json()).then(setGoals); useEffect(() => { load(); }, []);
+  async function submit(e: React.FormEvent) { e.preventDefault(); const r = await fetch("/api/goals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, targetAmountKopecks: Math.round(Number(target) * 100) }) }); if (r.ok) { setName(""); setTarget(""); setShowForm(false); load(); } }
+  return <div className="flex min-h-screen flex-col pb-16"><header className="flex items-center justify-between border-b border-slate-700 px-4 py-3"><h1 className="text-lg font-semibold">Цели</h1><button className="min-h-11 rounded-lg bg-blue-600 px-4" onClick={() => setShowForm((v) => !v)}>{showForm ? "Закрыть" : "Добавить"}</button></header><main className="flex-1 space-y-4 px-4 py-6">{showForm && <form onSubmit={submit} className="space-y-3"><input required placeholder="Название" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border px-3 py-2" /><input required min="0.01" step="0.01" type="number" placeholder="Цель, ₽" value={target} onChange={(e) => setTarget(e.target.value)} className="w-full rounded-lg border px-3 py-2" /><button className="w-full rounded-lg bg-blue-600 py-3">Сохранить</button></form>}{goals.map((goal) => <article key={goal.id} className="rounded-lg bg-slate-800 p-4"><div className="flex justify-between"><h2>{goal.name}</h2><span>{(goal.savedAmountKopecks / 100).toFixed(2)} / {(goal.targetAmountKopecks / 100).toFixed(2)} ₽</span></div>{goal.deadline && <p className="text-sm text-slate-400">Срок: {goal.deadline}</p>}</article>)}{!goals.length && !showForm && <p className="text-slate-400">Целей пока нет.</p>}</main><BottomNav /></div>;
+}

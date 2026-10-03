@@ -277,7 +277,7 @@ Git commit: pending
 
 # M8 — Goals
 
-STATUS: IN PROGRESS
+STATUS: COMPLETE ✓
 
 Implement:
 
@@ -291,15 +291,19 @@ Implement:
 
 Acceptance:
 
-- progress correct;
-- deadlines visible;
-- description available to AI snapshot/tooling.
+- progress correct; ✓
+- deadlines visible; ✓
+- description available to AI snapshot/tooling. ✓
+
+**QUALITY GATE:** typecheck, lint, 63 unit tests, production build, and 5 mobile Playwright tests passed.
+
+Git commit: pending
 
 ---
 
 # M9 — Protected envelopes
 
-STATUS: TODO
+STATUS: IN PROGRESS
 
 Implement budget envelopes/reserves.
 

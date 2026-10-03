@@ -4,7 +4,7 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M7 COMPLETE — QUALITY GATE PASSED — M8 IN PROGRESS
+STATUS: M8 COMPLETE — QUALITY GATE PASSED — M9 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -136,6 +136,13 @@ provider abstraction with deterministic Financial Engine
 - Debt APIs and mobile `/debts` creation/list flow
 - Quality gate passed: typecheck, lint, 60 unit tests, production build, 4 mobile Playwright tests
 
+**M8 - Goals:** COMPLETE ✓
+- Goals and contribution schemas/migration (`drizzle/0008_tiresome_jack_power.sql`)
+- Target, saved progress, deadline, priority, protection level, description, and status
+- Transactional contribution history with target-overflow and optimistic concurrency checks
+- Ownership-scoped goals/contributions APIs and mobile `/goals` flow
+- Quality gate passed: typecheck, lint, 63 unit tests, production build, 5 mobile Playwright tests
+
 ---
 
 ## Current database state
@@ -176,19 +183,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 8:** IN PROGRESS
+**Milestone 9:** IN PROGRESS
 
-Goals and goal contributions.
+Protected envelopes/reserves and deterministic available/protected/discretionary balances.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M7 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M8 internal quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M8 — Goals
+After review: M9 — Protected envelopes
 
 See TASKS.md and AUTOPILOT.md.
 

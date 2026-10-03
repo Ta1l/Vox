@@ -45,4 +45,10 @@ test.describe("Mobile Application", () => {
     await expect(page.getByRole("heading", { name: "Долги" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
   });
+
+  test("should render goals page", async ({ page }) => {
+    await page.goto("/goals");
+    await expect(page.getByRole("heading", { name: "Цели" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
+  });
 });

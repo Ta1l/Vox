@@ -1,0 +1,4 @@
+import { NextRequest, NextResponse } from "next/server"; import { z } from "zod"; import * as service from "@/lib/domain/goals/goalService";
+const userId = "00000000-0000-0000-0000-000000000001"; const createSchema = z.object({ name: z.string().trim().min(1).max(256), description: z.string().optional(), targetAmountKopecks: z.number().int().positive(), deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), priority: z.number().int().optional(), protectionLevel: z.enum(["HARD", "NEGOTIABLE", "FLEXIBLE"]).optional() });
+export async function GET() { return NextResponse.json(await service.getGoals(userId)); }
+export async function POST(request: NextRequest) { try { return NextResponse.json(await service.createGoal({ ...createSchema.parse(await request.json()), userId }), { status: 201 }); } catch (error) { return NextResponse.json({ message: error instanceof Error ? error.message : "Invalid input" }, { status: 400 }); } }
