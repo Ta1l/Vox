@@ -456,7 +456,7 @@ Implemented:
 
 **QUALITY GATE:** typecheck, lint, 87 unit/integration tests, production build, and 7 mobile Playwright tests passed. OpenAI API was not called without a configured key. Independent Opus audit remains recommended before production release.
 
-Git commit: pending
+Git commit: 492de29
 
 ---
 
@@ -489,7 +489,7 @@ Implemented user-scoped conversation/message/summary persistence, bounded latest
 
 **QUALITY GATE:** typecheck, lint, 91 unit/integration tests, production build, and mobile chat Playwright test passed. OpenAI API was not called without a configured key.
 
-Git commit: pending
+Git commit: c6dc058
 
 ---
 
@@ -548,13 +548,13 @@ Implemented automatic structured summaries when a conversation reaches 20 messag
 
 **QUALITY GATE:** typecheck, lint, 96 unit/integration tests, production build, and 8 Playwright tests passed. Critical review verified bounded DB reads, prompt-injection handling, no financial arithmetic in summary policy, stale-summary protection, and graceful handling of summary provider failure.
 
-Git commit: pending
+Git commit: 8c17ea8
 
 ---
 
 # M17 — AI eval suite
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Create at least 40 realistic scenarios.
 
@@ -573,6 +573,12 @@ Must include:
 Add deterministic assertions where possible.
 
 Prompt/policy changes must run against evals.
+
+Implemented 45 deterministic financial scenarios covering the nine required domains, centralized runtime prompt policies with regression contracts, safe-integer arithmetic checks, malformed provider output coverage, and foreign target ownership checks. The suite is deterministic and does not call an external model.
+
+**QUALITY GATE:** typecheck, lint, 145 unit/integration tests, production build, and 8 Playwright tests passed. Targeted AI eval/ownership/provider suite passed 55 tests. Live model-quality scoring was not run because no OpenAI API key is configured; policy and deterministic financial invariants are covered offline. Independent Opus audit remains recommended before production release.
+
+Git commit: pending
 
 ---
 

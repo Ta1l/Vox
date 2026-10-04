@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Commit M16 with its completed quality gate, then implement M17's 40+ adversarial AI evaluation scenarios.
+Commit M17 with its completed quality gate, then implement M18 notifications.
 
 ## Current Phase
-Phase 4 — M16 AI conversation compression
+Phase 4 — M17 complete; M18 notifications next
 
 ## Phases
 
@@ -40,6 +40,8 @@ Phase 4 — M16 AI conversation compression
 - [x] Implement M15 validated draft budget proposals
 - [x] Complete M15 atomicity/idempotency critical review and quality gate
 - [x] Implement M16 automatic conversation compression and measured prompt size
+- [x] Build M17 deterministic AI policy/evaluation harness with 45 adversarial financial cases
+- [x] Complete M17 full quality gate and critical review
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately

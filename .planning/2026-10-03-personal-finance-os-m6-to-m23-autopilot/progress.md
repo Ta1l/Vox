@@ -34,6 +34,15 @@
 - Critical review found no remaining BLOCKER/CRITICAL/HIGH findings. No external LLM API was required; all provider calls in tests are mocked.
 - M16 complete; milestone commit pending. Next: M17 AI evaluation suite (40+ realistic adversarial scenarios).
 
+### M17 implementation
+- Centralized the existing financial-adviser, proposal, and summary system policies so prompt-contract tests exercise the exact runtime text.
+- Added 45 deterministic financial scenarios across all nine required categories (HARD, partial debts, deadlines, insufficient cash, future income, overdue debt, negotiable costs, goals, contradictory priorities), plus safe-integer and policy contract checks.
+- Added explicit ownership rejection coverage for foreign proposal entity IDs. AI proposal arithmetic now rejects unsafe integers, not just fractional/negative amounts.
+- Targeted suite passed 55 tests. Full gate is running; no external model/API calls are made by evals.
+- M17 quality gate passed: 20 files / 145 unit-integration tests, typecheck, lint, production build, and 8/8 Playwright tests. Targeted eval/ownership/provider checks: 55 passed.
+- Critical review confirmed model output amounts and available limits are safe integers; future income is never added to free cash; target ownership is checked; policy text changes fail the eval contract tests. No BLOCKER/CRITICAL/HIGH findings remain.
+- Live model scoring was not run without an API key; deterministic policy/financial evaluation is complete. M17 commit pending; next milestone M18 notifications.
+
 ## Session: 2026-10-03
 
 ### Current Status

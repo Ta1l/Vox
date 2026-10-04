@@ -29,6 +29,10 @@
 - Auto-compression triggers at 20 stored messages or an approximate 15K historical token threshold (characters / 4), summarizes only the prefix older than the latest 10, and caps each request to 10 messages / 20K characters.
 - Summary coverage is a message-prefix count; writes lock the owned conversation and reject stale/lower-coverage updates. Current financial facts and arithmetic remain excluded from conversational summaries.
 
+## M17 AI evaluations
+- Initial competing-deadline fixture said only 59,999 kopecks remained while defining 60,000; the eval correctly exposed the fixture arithmetic error. Corrected protected funds to 20,001 so the expected boundary matches.
+- Foreign-target regression initially used a UUID with a zero version nibble, which Zod correctly rejects before ownership lookup; changed it to a valid v4-format UUID to exercise the actual foreign-entity check.
+
 ## Resources
 -
 

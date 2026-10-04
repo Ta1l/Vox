@@ -4,7 +4,7 @@ Last updated: 2026-10-04
 
 ## Project status
 
-STATUS: M16 COMPLETE — QUALITY GATE PASSED — M17 IN PROGRESS
+STATUS: M17 COMPLETE — QUALITY GATE PASSED — M18 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -197,6 +197,12 @@ provider abstraction with deterministic Financial Engine
 - Quality gate passed: typecheck, lint, 96 unit/integration tests, production build, 8 Playwright tests
 - Independent Opus audit remains recommended before production release
 
+**M17 - AI eval suite:** COMPLETE ✓
+- Added 45 realistic deterministic scenarios across all required financial/adversarial categories and locked runtime prompt contracts into the eval suite
+- Added safe-integer proposal arithmetic and foreign target ownership regression checks; existing provider tests cover malformed structured output
+- Full gate passed: typecheck, lint, 145 unit/integration tests, production build, 8 Playwright tests
+- Live model scoring was not run because `OPENAI_API_KEY` is not configured; deterministic tests need no external model. Independent Opus audit remains recommended before production release
+
 ---
 
 ## Current database state
@@ -219,7 +225,7 @@ Not deployed.
 
 ## Current tests
 
-Unit/integration suite: 96 tests passed. Playwright mobile navigation suite: 8 tests passed. Typecheck, lint, and production build passed.
+Unit/integration suite: 145 tests passed. Playwright mobile navigation suite: 8 tests passed. Typecheck, lint, and production build passed.
 
 ---
 
@@ -237,19 +243,19 @@ Unit/integration suite: 96 tests passed. Playwright mobile navigation suite: 8 t
 
 ## Current milestone
 
-**Milestone 17:** IN PROGRESS
+**Milestone 18:** IN PROGRESS
 
-AI adversarial evaluation suite.
+Notifications (PWA and Web Push).
 
 ---
 
 ## Next action
 
-M16 complete. Begin M17 — AI eval suite (at least 40 realistic adversarial scenarios plus deterministic assertions).
+M17 complete and committed. Begin M18 — notifications.
 
 External self-review script intentionally not invoked.
 
-Continue M17 — AI eval suite
+Continue M18 — notifications
 
 See TASKS.md and AUTOPILOT.md.
 
