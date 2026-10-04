@@ -54,6 +54,19 @@
 - Critical review found no BLOCKER/CRITICAL/HIGH findings: generic payloads prevent sensitive lock-screen leakage, user ownership is enforced, global notification dedupe uses a stable user entity key, and push endpoints are origin allow-listed.
 - M18 complete; next milestone M19 transaction import.
 
+### M18 completion
+- Committed as `84a4045`.
+
+### M19 start
+- Requirements recovery in progress: CSV/manual statement import must normalize, deduplicate, match, and classify transactions deterministically before any optional AI categorization.
+
+### M19 completion
+- Added migration 0014 for staging transactions and per-user manual CSV connections; local development migration applied successfully.
+- Implemented strict CSV parsing/normalization, safe integer kopecks, deterministic hash fallback IDs, PostgreSQL deduplication, matching existing income/expense entries, sanitized descriptions, deterministic category hints, and explicit confirmation.
+- Added mobile import/review UI, APIs, unit/integration tests, and navigation coverage.
+- Full quality gate passed: typecheck, lint, 150 unit/integration tests, production build, and 10 Playwright tests.
+- Critical review found no BLOCKER/CRITICAL/HIGH findings; imported rows do not affect financial balance until explicit confirmation, and confirmed rows are idempotent under row lock.
+
 ## Session: 2026-10-03
 
 ### Current Status

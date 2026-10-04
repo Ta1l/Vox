@@ -14,6 +14,7 @@ const navItems = [
   { href: "/planning", label: "План", icon: "🗓️" },
   { href: "/chat", label: "Советник", icon: "💬" },
   { href: "/notifications", label: "События", icon: "🔔" },
+  { href: "/imports", label: "Импорт", icon: "📥" },
 ];
 
 export default function BottomNav() {

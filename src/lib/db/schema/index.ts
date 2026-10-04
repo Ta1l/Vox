@@ -8,3 +8,4 @@ export * from "./envelopes";
 export * from "./planning";
 export * from "./ai";
 export * from "./notifications";
+export * from "./bank";

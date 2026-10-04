@@ -74,4 +74,10 @@ test.describe("Mobile Application", () => {
     await page.goto("/notifications");
     await expect(page.getByRole("heading", { name: "Уведомления" })).toBeVisible();
   });
+
+  test("should render transaction import page", async ({ page }) => {
+    await page.goto("/imports");
+    await expect(page.getByRole("heading", { name: "Импорт операций" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Импортировать" })).toBeVisible();
+  });
 });

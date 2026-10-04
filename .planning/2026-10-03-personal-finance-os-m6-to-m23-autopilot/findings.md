@@ -36,6 +36,12 @@
 ## Resources
 -
 
+## M19 transaction import
+- Existing financial records use positive integer kopecks; imported bank rows preserve signed direction in staging and only create positive income/expense records after explicit confirmation.
+- Manual CSV imports use a per-user `manual-csv` bank connection so `(connectionId, externalId)` deduplication is enforced by PostgreSQL; rows without an external ID receive a deterministic SHA-256 fingerprint.
+- Imported descriptions are bounded and strip HTML-like delimiters before storage. No AI classification is invoked; deterministic keyword mapping supplies category hints and uncertain rows remain REVIEW.
+- Confirmation is the only import path that creates income/expense records; matching existing records avoids duplicate financial entries.
+
 ## M10 Dashboard discovery (2026-10-03)
 - Existing financial snapshot correctly excludes IN_TRANSIT from available cash and reports it separately.
 - Dashboard needs one deterministic server response combining snapshot, earned/expense period totals, pending/overdue occurrences, active debts, goals, and alerts.

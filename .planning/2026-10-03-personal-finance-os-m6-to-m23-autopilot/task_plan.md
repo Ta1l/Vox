@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Commit M18 with its completed quality gate, then implement M19 transaction import.
+Commit M19 with its completed quality gate, then implement M20 bank provider architecture.
 
 ## Current Phase
-Phase 4 — M18 complete; M19 transaction import next
+Phase 4 — M19 complete; M20 bank provider architecture next
 
 ## Phases
 
@@ -43,6 +43,7 @@ Phase 4 — M18 complete; M19 transaction import next
 - [x] Build M17 deterministic AI policy/evaluation harness with 45 adversarial financial cases
 - [x] Complete M17 full quality gate and critical review
 - [x] Complete M18 notification APIs, UI, tests, and quality gate
+- [x] Implement M19 transaction import and quality gate
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately

@@ -605,7 +605,7 @@ Implemented notification persistence, deterministic scheduling, ownership-scoped
 
 # M19 — Transaction import
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Start with:
 
@@ -620,6 +620,10 @@ matching
 classification
 
 AI categorization only when deterministic matching is insufficient.
+
+Implemented manual CSV staging, strict integer-kopeck normalization, PostgreSQL deduplication, user-scoped existing-entry matching, deterministic category hints, explicit confirmation, and mobile review flow. Untrusted descriptions are bounded and sanitized; no AI categorization is invoked.
+
+**QUALITY GATE:** typecheck, lint, 150 unit/integration tests, production build, and 10 Playwright tests passed. One integration test verifies deduplication and confirmation idempotency.
 
 ---
 
