@@ -697,7 +697,7 @@ See AGENTS.md for full architecture.
 
 # M21 — Security hardening
 
-STATUS: IN PROGRESS
+STATUS: COMPLETE ✓
 
 Review:
 
@@ -713,6 +713,12 @@ Review:
 - audit log.
 
 Run independent security review.
+
+M21 implementation scope: production fail-closed session boundary using `APP_AUTH_TOKEN`, same-origin checks, security headers/CSP, general and import request limits, DNS-aware custom-provider SSRF revalidation, hostile AI/external-text sanitization, and localhost-only development database binding. Audit-log persistence and distributed limiter storage remain required follow-ups before public multi-instance deployment.
+
+**QUALITY GATE:** typecheck, lint, 160 unit/integration tests, production build, 11 Playwright tests, and `git diff --check` passed. Critical review found no BLOCKER/CRITICAL/HIGH findings. The remaining audit-log and distributed-limiter items are documented production follow-ups for M22/M23.
+
+Git commit: pending
 
 ---
 

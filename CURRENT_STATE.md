@@ -215,6 +215,8 @@ M19 manual CSV transaction import is complete: staging, normalization, deduplica
 
 M20 bank-provider architecture and user-configurable OpenAI-compatible provider are complete. Bank adapters return normalized rows without writing financial records; custom provider keys are AES-256-GCM encrypted, provider selection is custom → system → error, and all responses use the existing structured-output validation pipeline. Quality gate passed: typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests. The limiter is process-local for V1 and must move to shared storage during M21 deployment hardening; DNS-based SSRF defenses also remain a M21 task.
 
+M21 security hardening is complete. Production now fails closed unless `APP_AUTH_TOKEN` and `APP_URL` are configured and requests carry the HttpOnly `fin_session` cookie obtained from `/api/auth/login`; development remains seed-compatible. Middleware adds same-origin checks for state-changing API requests, general/import rate limits, CSP/security headers, and generic authentication errors. Custom provider requests re-check DNS resolution for private addresses in production, AI prompt text is sanitized as untrusted data, and PostgreSQL binds to localhost in the development compose file. Distributed limiter storage and append-only financial audit-log wiring remain pre-public-deployment follow-ups.
+
 ---
 
 ## Current AI state
@@ -231,7 +233,7 @@ Not deployed.
 
 ## Current tests
 
-Unit/integration suite: 156 tests passed. Playwright mobile navigation suite: 11 tests passed. Typecheck, lint, and production build passed.
+Unit/integration suite: 160 tests passed. Playwright mobile navigation suite: 11 tests passed. Typecheck, lint, and production build passed after M21 changes.
 
 ---
 
@@ -249,19 +251,19 @@ Unit/integration suite: 156 tests passed. Playwright mobile navigation suite: 11
 
 ## Current milestone
 
-**Milestone 21:** IN PROGRESS
+**Milestone 22:** IN PROGRESS
 
-Security hardening.
+Reliability.
 
 ---
 
 ## Next action
 
-Begin M21 — security hardening.
+Begin M22 — reliability.
 
 External self-review script intentionally not invoked.
 
-Continue M21 — security hardening
+Continue M22 — reliability
 
 See TASKS.md and AUTOPILOT.md.
 

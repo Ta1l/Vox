@@ -66,6 +66,13 @@
 - The AI limiter enforces 10 requests/minute and 100/hour per user in-process; shared/distributed storage is required before multi-instance production deployment.
 - Quality gate passed with 26 files/156 unit-integration tests and 11 Playwright tests, plus typecheck, lint, build, and `git diff --check`. No BLOCKER/CRITICAL/HIGH findings remain.
 
+## M21 security hardening (2026-10-04)
+- The previous repository had no middleware/auth boundary: every API route used the fixed development user and Docker published PostgreSQL on all interfaces. M21 adds a production-only fail-closed `APP_AUTH_TOKEN` session cookie, login/logout endpoint, same-origin checks, security headers/CSP, general/import request limits, and localhost-only database binding.
+- Custom provider URLs are revalidated immediately before requests. In production, DNS results are checked and private/loopback/link-local/mapped addresses are rejected to reduce DNS-rebinding SSRF risk.
+- User messages, summaries, financial labels, and imported external descriptions are treated as untrusted AI context and sanitized before model prompts; structured validation remains mandatory.
+- The V1 limiter remains process-local because no shared cache is present. Distributed enforcement and append-only audit-log wiring are production follow-ups; these are documented rather than hidden.
+- M21 gate classification: BLOCKER 0, CRITICAL 0, HIGH 0, MEDIUM 2 (shared limiter and audit-log persistence before multi-instance/public deployment), LOW 0. Local single-user development remains safe and deterministic; M22/M23 must close the MEDIUM deployment items before production release.
+
 ## M14 recovery (2026-10-04)
 - HEAD `492de29` completes M13; no tracked changes. User `AGENTS.md` and planning controls are untracked and must be preserved.
 - M14 requires stored mobile adviser conversation, current deterministic snapshot, structured summary plus bounded last-10 window, and draft-only answers. M16 owns generation/compression of durable summaries.

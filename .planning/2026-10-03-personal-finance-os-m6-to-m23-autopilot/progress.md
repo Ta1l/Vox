@@ -77,6 +77,13 @@
 - Quality gate passed: typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests. Critical diff review found no BLOCKER/CRITICAL/HIGH findings.
 - M20 is ready for milestone commit; next milestone is M21 security hardening.
 
+### M21 completion
+- Added production fail-closed operator authentication (`APP_AUTH_TOKEN`, HttpOnly `fin_session`, `/login`, `/api/auth/login`), same-origin enforcement requiring `APP_URL`, general/import middleware limits, CSP/security headers, and localhost-only PostgreSQL development binding.
+- Added production DNS-resolution SSRF revalidation for custom AI provider URLs and recursive sanitization of untrusted AI context before model calls.
+- Quality gate passed: typecheck, lint, 160 unit/integration tests, production build, and 11 Playwright tests; `git diff --check` passed.
+- Critical review: no BLOCKER/CRITICAL/HIGH findings. Distributed limiter storage and append-only audit-log wiring are explicit M22/M23 deployment follow-ups.
+- M21 is ready for milestone commit; next milestone is M22 reliability.
+
 ## Session: 2026-10-03
 
 ### Current Status

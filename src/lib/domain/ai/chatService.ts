@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getAIProvider, requestValidatedAI } from "./aiRequestService";
 import { CONVERSATION_SUMMARY_POLICY } from "./aiPolicy";
-import { appendMessage, buildConversationContext, conversationSummarySchema, getConversationSummary, getMessageStats, getMessageWindow, RECENT_AI_MESSAGES, saveSummary, type ConversationContext } from "./conversationService";
+import { appendMessage, buildConversationContext, conversationSummarySchema, getConversationSummary, getMessageStats, getMessageWindow, RECENT_AI_MESSAGES, sanitizeAIValue, sanitizeForAI, saveSummary, type ConversationContext } from "./conversationService";
 import type { AIProvider } from "./aiTypes";
 
 const adviceSchema = z.object({ answer: z.string().min(1).max(8000), warnings: z.array(z.string()).max(8), draftOnly: z.literal(true) }).strict();
@@ -13,7 +13,7 @@ const COMPRESS_BATCH_MESSAGES = 10;
 const COMPRESS_BATCH_CHARS = 20_000;
 
 function promptFor(context: ConversationContext, message: string) {
-  return JSON.stringify({ financialSnapshot: context.snapshot, summary: context.summary, recentMessages: context.recentMessages.map(({ role, content }) => ({ role, content: content.slice(0, 800) })), userMessage: message });
+  return JSON.stringify({ financialSnapshot: sanitizeAIValue(context.snapshot), summary: sanitizeAIValue(context.summary), recentMessages: context.recentMessages.map(({ role, content }) => ({ role, content: sanitizeForAI(content, 800) })), userMessage: sanitizeForAI(message, 4000) });
 }
 
 async function compressConversationIfNeeded(userId: string, conversationId: string, provider: AIProvider) {
@@ -34,7 +34,7 @@ async function compressConversationIfNeeded(userId: string, conversationId: stri
   const summary = await requestValidatedAI(provider, {
     userId,
     system: CONVERSATION_SUMMARY_POLICY,
-    userMessage: JSON.stringify({ previousSummary: current.summary, olderMessages: selected.map(({ role, content }) => ({ role, content })) }),
+    userMessage: JSON.stringify({ previousSummary: sanitizeAIValue(current.summary), olderMessages: selected.map(({ role, content }) => ({ role, content: sanitizeForAI(content, 1200) })) }),
     schemaName: "conversation_summary",
     schema: summaryJsonSchema,
     validate: (value) => conversationSummarySchema.parse(value),

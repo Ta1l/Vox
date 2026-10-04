@@ -1,4 +1,5 @@
 import type { AIProvider, AIProviderConfig, AIUsage, StructuredAIResult } from "./aiTypes";
+import { assertSafeProviderUrl } from "./providerConfigService";
 
 type FetchLike = typeof fetch;
 
@@ -6,11 +7,12 @@ export class CustomOpenAICompatibleProvider implements AIProvider {
   constructor(private readonly config: AIProviderConfig, private readonly fetchImpl: FetchLike = fetch) {}
 
   async generateStructured<T>(params: { userId: string; system: string; userMessage: string; schemaName: string; schema: Record<string, unknown>; validate: (value: unknown) => T }): Promise<StructuredAIResult<T>> {
+    const baseUrl = await assertSafeProviderUrl(this.config.baseUrl);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30_000);
     let response: Response;
     try {
-      response = await this.fetchImpl(`${this.config.baseUrl.replace(/\/$/, "")}/v1/responses`, {
+      response = await this.fetchImpl(`${baseUrl.replace(/\/$/, "")}/v1/responses`, {
         method: "POST",
         headers: { Authorization: `Bearer ${this.config.apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({ model: this.config.modelName, store: false, user: params.userId, input: [{ role: "system", content: params.system }, { role: "user", content: params.userMessage }], text: { format: { type: "json_schema", name: params.schemaName, schema: params.schema, strict: true } } }),

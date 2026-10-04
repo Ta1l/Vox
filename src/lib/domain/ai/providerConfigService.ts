@@ -1,4 +1,5 @@
 import { isIP } from "node:net";
+import { lookup } from "node:dns/promises";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { aiProviderConfigs } from "@/lib/db/schema/aiProviderConfigs";
@@ -9,6 +10,7 @@ export interface ProviderConfigInput { baseUrl: string; apiKey: string; modelNam
 
 function privateHostname(hostname: string) {
   const host = hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (host.startsWith("::ffff:")) return privateHostname(host.slice(7));
   if (["localhost", "localhost.localdomain", "metadata.google.internal"].includes(host) || host.endsWith(".localhost") || host.endsWith(".local")) return true;
   const ipVersion = isIP(host);
   if (ipVersion === 4) {
@@ -27,6 +29,18 @@ export function validateBaseUrl(value: string) {
   if (parsed.port && parsed.port !== "443") throw new Error("Only HTTPS port 443 is allowed");
   if (privateHostname(parsed.hostname) && process.env.NODE_ENV === "production") throw new Error("Private network base URLs are not allowed");
   return parsed.origin + parsed.pathname.replace(/\/$/, "");
+}
+
+export async function assertSafeProviderUrl(value: string) {
+  const normalized = validateBaseUrl(value);
+  if (process.env.NODE_ENV !== "production") return normalized;
+  const hostname = new URL(normalized).hostname;
+  if (privateHostname(hostname)) throw new Error("Private network base URLs are not allowed");
+  let addresses: { address: string }[];
+  try { addresses = await lookup(hostname, { all: true, verbatim: true }); }
+  catch { throw new Error("Provider host could not be resolved"); }
+  if (!addresses.length || addresses.some(({ address }) => privateHostname(address))) throw new Error("Provider host resolves to a private network");
+  return normalized;
 }
 
 export function validateApiKey(value: string) {

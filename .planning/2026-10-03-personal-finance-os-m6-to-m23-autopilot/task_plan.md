@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Implement M21 security hardening and quality gate.
+Implement M22 reliability and quality gate.
 
 ## Current Phase
-Phase 4 — M21 security hardening in progress
+Phase 4 — M22 reliability in progress
 
 ## Phases
 
@@ -45,6 +45,7 @@ Phase 4 — M21 security hardening in progress
 - [x] Complete M18 notification APIs, UI, tests, and quality gate
 - [x] Implement M19 transaction import and quality gate
 - [x] Implement M20 BankProvider architecture and quality gate
+- [x] Implement M21 security hardening and quality gate
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately
@@ -61,6 +62,8 @@ Phase 4 — M21 security hardening in progress
 | Use deterministic DB/domain validation | Financial truth remains PostgreSQL + Financial Engine; AI is not involved in M6. |
 | Keep the custom AI provider OpenAI-Responses-compatible | Reuses the existing structured-output contract and preserves deterministic post-validation. |
 | Defer shared rate limiting and DNS-aware SSRF checks to M21 | M20 has a bounded process-local limiter and literal private-host blocking; deployment-wide controls require the security-hardening milestone. |
+| M21 keeps local development seed-compatible while requiring an explicit production session token | The repository has no auth dependency or user-login flow yet; production requests fail closed behind an HttpOnly token cookie, while development/E2E behavior remains unchanged. |
+| Treat distributed rate limiting and append-only audit-log wiring as deployment-critical follow-ups | The V1 repository has no shared cache or existing audit table; silently pretending process-local controls are multi-instance-safe would be misleading. |
 
 ## Errors Encountered
 | Error | Resolution |
@@ -74,3 +77,4 @@ Phase 4 — M21 security hardening in progress
 | M14 E2E chat send failed on missing fixed development user | Kept navigation E2E seed-independent; exercised user-scoped chat send via integration test with dedicated test users. |
 | Default Vitest fork workers timed out under constrained memory; `--poolOptions` is unsupported in this Vitest version | Re-ran the full suite with `--pool=threads` and capped Node heap; 21 files / 146 tests passed. |
 | M20 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with `NODE_OPTIONS=--max-old-space-size=512 npm test -- --pool=threads`; 26 files / 156 tests passed. |
+| M21 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with the same constrained command; 27 files / 160 tests passed. |

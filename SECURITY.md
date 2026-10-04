@@ -64,6 +64,10 @@ export async function withAuth<T>(
 
 **Rationale:** VPN/IP whitelist alone не является достаточной защитой. Misconfiguration может expose финансовые данные без authentication boundary.
 
+### Current M21 implementation
+
+The repository currently has a single-user development seed. In production, `middleware.ts` fails closed unless `APP_AUTH_TOKEN` (at least 32 characters) is configured. `/api/auth/login` exchanges that operator-held token for an HttpOnly, Secure, SameSite=Strict `fin_session` cookie; protected API/page requests require the cookie. Development and tests intentionally keep the fixed seed user so financial tests remain deterministic. A full multi-user identity provider remains a post-V1 migration.
+
 ### Future: Multi-user authentication
 
 Когда добавляется multi-user support:

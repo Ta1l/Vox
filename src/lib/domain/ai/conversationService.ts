@@ -8,6 +8,17 @@ import { FINANCIAL_ADVISER_POLICY } from "./aiPolicy";
 export const MAX_AI_MESSAGE_LENGTH = 4000;
 export const RECENT_AI_MESSAGES = 10;
 
+export function sanitizeForAI(value: string, maxLength = 1200) {
+  return value.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/```/g, "").replace(/\[INST\]/gi, "").replace(/\b(system|assistant|developer)\s*:/gi, "$1 (quoted):").slice(0, maxLength);
+}
+
+export function sanitizeAIValue(value: unknown): unknown {
+  if (typeof value === "string") return sanitizeForAI(value);
+  if (Array.isArray(value)) return value.map(sanitizeAIValue);
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeAIValue(item)]));
+  return value;
+}
+
 export const conversationSummarySchema = z.object({
   durableDecisions: z.array(z.object({ decision: z.string().max(500), context: z.string().max(1000), validUntil: z.string().nullable() }).strict()).max(20),
   userPreferences: z.object({ avoidCategories: z.array(z.string().max(100)).max(20), priorityDebts: z.array(z.string().max(100)).max(20), priorityGoals: z.array(z.string().max(100)).max(20), minimumDiscretionary: z.number().int().nonnegative().nullable() }).strict(),
