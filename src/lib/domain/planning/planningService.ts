@@ -106,6 +106,34 @@ export async function createAllocation(params: { userId: string; cycleId: string
   });
 }
 
+export async function createAllocations(params: { userId: string; cycleId: string; allocations: Array<{ targetType: AllocationTargetType; targetId?: string; amountKopecks: money.Money; reason?: string; isAiGenerated?: boolean; snapshotVersion?: string; idempotencyKey?: string }> }) {
+  if (!params.allocations.length) return [];
+  for (const item of params.allocations) {
+    money.validate(item.amountKopecks);
+    if (!money.isPositive(item.amountKopecks)) throw new Error("Allocation must be positive");
+    await assertTarget(params.userId, item.targetType, item.targetId);
+  }
+  const cycle = await getPlanningCycle(params.userId, params.cycleId);
+  if (cycle.status !== "ACTIVE" && cycle.status !== "DRAFT") throw new Error("Cycle is not allocatable");
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select id from users where id = ${params.userId} for update`);
+    await tx.execute(sql`select id from planning_cycles where id = ${cycle.id} for update`);
+    const existing = await tx.query.budgetAllocations.findMany({ where: eq(budgetAllocations.cycleId, cycle.id) });
+    const existingKeys = new Map(existing.filter((item) => item.idempotencyKey).map((item) => [item.idempotencyKey!, item]));
+    const pending = params.allocations.filter((item) => !item.idempotencyKey || !existingKeys.has(item.idempotencyKey));
+    const [snapshot, obligations] = await Promise.all([getFinancialSnapshot(params.userId), getCycleObligationsTotal(params.userId, cycle)]);
+    const available = Math.max(0, snapshot.availableCashKopecks - snapshot.protectedAmountKopecks);
+    const generalLocked = existing.filter((item) => item.targetType !== "OBLIGATION").reduce((sum, item) => sum + item.amountKopecks, 0);
+    const allocatedToObligations = existing.filter((item) => item.targetType === "OBLIGATION").reduce((sum, item) => sum + item.amountKopecks, 0);
+    const obligationLocked = Math.max(obligations, allocatedToObligations);
+    const additionalGeneral = pending.filter((item) => item.targetType !== "OBLIGATION").reduce((sum, item) => sum + item.amountKopecks, 0);
+    const additionalObligations = pending.filter((item) => item.targetType === "OBLIGATION").reduce((sum, item) => sum + item.amountKopecks, 0);
+    if (generalLocked + additionalGeneral + Math.max(obligationLocked, allocatedToObligations + additionalObligations) > available) throw new Error("Allocation exceeds available cycle balance");
+    const created = pending.length ? await tx.insert(budgetAllocations).values(pending.map((item) => ({ cycleId: cycle.id, userId: params.userId, targetType: item.targetType, targetId: item.targetId, amountKopecks: item.amountKopecks, reason: item.reason, isAiGenerated: item.isAiGenerated ?? false, snapshotVersion: item.snapshotVersion, idempotencyKey: item.idempotencyKey }))).returning() : [];
+    return [...existingKeys.values()].filter((item) => params.allocations.some((allocation) => allocation.idempotencyKey === item.idempotencyKey)).concat(created);
+  });
+}
+
 export async function getCycleSummary(userId: string, cycleId: string) {
   const cycle = await getPlanningCycle(userId, cycleId);
   const allocations = await db.query.budgetAllocations.findMany({ where: and(eq(budgetAllocations.userId, userId), eq(budgetAllocations.cycleId, cycleId)), orderBy: asc(budgetAllocations.createdAt) });

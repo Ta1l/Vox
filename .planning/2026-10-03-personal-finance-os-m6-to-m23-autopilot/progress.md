@@ -13,6 +13,18 @@
 - Local dev DB's legacy migration journal was empty despite existing schema: applied 0012 and reconciled its latest journal entry after verifying required tables; next CLI migrations can proceed.
 - Next milestone: M15 weekly budgeting.
 
+### M15 implementation
+- Added strict BudgetProposal schema, snapshot-version/ownership/amount validation, deterministic totals, draft generation, and explicit approval through existing planning allocation transactions.
+- Added proposal API and planning UI draft display; targeted proposal/chat tests (6 passed), typecheck/lint/build passed.
+- Full regression and Playwright rerun remains before final M15 release gate.
+
+### M15 quality gate and review
+- Full suite passed: 19 files / 94 tests; typecheck, lint, and production build passed; Playwright passed 8/8.
+- Critical review found AI proposal approvals were individually committed and snapshot-only idempotency keys could collide across alternate drafts. Added transactional batch allocations and proposal-specific SHA-256 keys; added regression coverage for atomic rejection and idempotent retry.
+- Added explicit approve/reject/edit/discuss actions to planning proposal UI. M15 docs now reflect completed gate; milestone commit pending.
+- Note: a parallel typecheck/build invocation temporarily caused missing generated `.next/types`; reran typecheck after build sequentially and it passed. No source issue.
+- Next milestone: M16 automatic durable conversation compression and measured context size/token usage.
+
 ## Session: 2026-10-03
 
 ### Current Status

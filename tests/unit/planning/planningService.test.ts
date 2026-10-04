@@ -63,6 +63,17 @@ describe("planning cycles", () => {
     await expect(planningService.createAllocation({ userId, cycleId: cycle.id, targetType: "GENERAL", amountKopecks: 70000 })).resolves.toBeTruthy();
   });
 
+  it("creates a proposal batch atomically and idempotently", async () => {
+    const cycle = await planningService.createPlanningCycle({ userId, startDate: "2027-01-01", endDate: "2027-01-08", status: "DRAFT" });
+    const allocations = [{ targetType: "GENERAL" as const, amountKopecks: 60000, idempotencyKey: "batch-a" }, { targetType: "GENERAL" as const, amountKopecks: 60000, idempotencyKey: "batch-b" }];
+    await expect(planningService.createAllocations({ userId, cycleId: cycle.id, allocations })).rejects.toThrow("exceeds");
+    await expect(planningService.getCycleSummary(userId, cycle.id)).resolves.toMatchObject({ allocatedKopecks: 0 });
+    const valid = allocations.map((item) => ({ ...item, amountKopecks: 30000 }));
+    const created = await planningService.createAllocations({ userId, cycleId: cycle.id, allocations: valid });
+    expect(created).toHaveLength(2);
+    await expect(planningService.createAllocations({ userId, cycleId: cycle.id, allocations: valid })).resolves.toEqual(created);
+  });
+
   it("allows genuinely received income after the immutable opening snapshot", async () => {
     const cycle = await planningService.createPlanningCycle({ userId, startDate: "2026-12-01", endDate: "2026-12-08", status: "DRAFT" });
     expect(cycle.openingBalanceKopecks).toBe(100000);

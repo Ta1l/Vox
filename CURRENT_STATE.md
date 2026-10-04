@@ -1,10 +1,10 @@
 # CURRENT_STATE.md
 
-Last updated: 2026-10-03
+Last updated: 2026-10-04
 
 ## Project status
 
-STATUS: M14 COMPLETE — QUALITY GATE PASSED — M15 IN PROGRESS
+STATUS: M15 COMPLETE — QUALITY GATE PASSED — M16 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -184,6 +184,12 @@ provider abstraction with deterministic Financial Engine
 - Quality gate passed: typecheck, lint, 91 unit/integration tests, build, mobile Playwright chat coverage
 - OpenAI API was not called without a configured key; independent Opus audit remains recommended before production release
 
+**M15 - AI weekly budgeting:** COMPLETE ✓
+- Added strict BudgetProposal schema, snapshot-version validation, ownership checks, deterministic totals, and explicit approve/reject/edit/discuss UI
+- Approval now uses atomic planning allocation batch writes and proposal-specific idempotency keys
+- Full gate passed: typecheck, lint, 94 unit/integration tests, production build, 8 Playwright tests
+- Independent Opus financial audit remains recommended before production release
+
 ---
 
 ## Current database state
@@ -224,19 +230,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 15:** TODO
+**Milestone 16:** IN PROGRESS
 
-AI weekly budgeting with validated draft allocations.
+AI conversation compression with durable summaries.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M14 AI adviser/chat quality gate passed. Independent Opus financial audit remains recommended before production release.
+M15 review checkpoint passed: 94 unit/integration tests, typecheck, lint, production build, and 8 Playwright tests; critical review fixed batch atomicity and idempotency risks. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M15 — AI weekly budgeting
+Continue M16 — AI conversation compression
 
 See TASKS.md and AUTOPILOT.md.
 

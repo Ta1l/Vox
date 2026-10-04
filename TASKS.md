@@ -495,7 +495,7 @@ Git commit: pending
 
 # M15 — AI weekly budgeting
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement:
 
@@ -522,11 +522,17 @@ discuss
 
 Only explicit approval creates real allocations.
 
+Implemented deterministic proposal schema/validation, snapshot-version TOCTOU protection, target ownership checks, recalculated totals, explicit approve/reject/edit/discuss controls, atomic approval batch, proposal-specific idempotency, and planning UI draft display.
+
+**QUALITY GATE:** typecheck, lint, all 94 unit/integration tests, production build, and all 8 mobile Playwright tests passed. Critical review fixed HIGH risk of non-atomic approval and idempotency collisions. Independent Opus financial audit remains recommended before production release.
+
+Git commit: pending
+
 ---
 
 # M16 — AI conversation compression
 
-STATUS: TODO
+STATUS: IN_PROGRESS
 
 Implement structured summaries.
 

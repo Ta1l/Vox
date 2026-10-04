@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Read M15 AI weekly budgeting requirements and implement validated draft allocations.
+Commit M15 with its completed quality gate, then implement M16 automatic structured conversation compression and token measurement.
 
 ## Current Phase
-Phase 4 — M15 AI weekly budgeting
+Phase 4 — M16 AI conversation compression
 
 ## Phases
 
@@ -37,6 +37,8 @@ Phase 4 — M15 AI weekly budgeting
 - [x] Implement M12 deterministic financial simulation and financial audit
 - [x] Implement M13 AI infrastructure with structured output and usage logging
 - [x] Implement M14 bounded AI adviser/chat
+- [x] Implement M15 validated draft budget proposals
+- [x] Complete M15 atomicity/idempotency critical review and quality gate
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately

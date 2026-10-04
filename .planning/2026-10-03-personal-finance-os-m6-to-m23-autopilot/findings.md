@@ -19,6 +19,9 @@
 ## Issues Encountered
 | Issue | Resolution |
 |-------|------------|
+| Vitest target paths under `src/lib` returned no test files | Tests live under `tests/unit`; rerun with `tests/unit/ai/...` paths. |
+| Batch-allocation regression initially expected 80,000 to exceed the 100,000 cycle balance | The test was wrong; raised the over-limit case to 120,000. |
+| Typecheck raced with production build while both regenerated `.next/types` | Run typecheck/build sequentially; no source defect. |
 
 ## Resources
 -
