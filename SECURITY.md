@@ -565,6 +565,8 @@ interface AuditLogEntry {
 
 ### Automated backups
 
+The repository implementation is `scripts/backup.sh`, `scripts/restore.sh`, and `scripts/verify-backup.sh`. Backups are encrypted before they leave the temporary file, and verification uses `pg_restore --list` without mutating a database.
+
 ```bash
 #!/bin/bash
 # /scripts/backup.sh

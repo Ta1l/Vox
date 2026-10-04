@@ -724,7 +724,7 @@ Git commit: pending
 
 # M22 — Reliability
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Add:
 
@@ -736,6 +736,12 @@ Add:
 - job monitoring.
 
 Test restore from backup.
+
+M22 implementation scope: encrypted custom-format PostgreSQL backup/restore/verification scripts, database-backed job-run monitoring primitives, redacted JSON structured logging, and a database readiness health endpoint. pg-boss worker wiring remains deferred until M23 deployment composition.
+
+**QUALITY GATE:** typecheck, lint, 163 unit/integration tests, production build, 11 Playwright tests (single worker), `git diff --check`, shell syntax checks, and an encrypted local backup plus `pg_restore --list` verification passed. Critical review found no BLOCKER/CRITICAL/HIGH findings.
+
+Git commit: pending
 
 ---
 

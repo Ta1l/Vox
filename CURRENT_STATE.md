@@ -251,19 +251,19 @@ Unit/integration suite: 160 tests passed. Playwright mobile navigation suite: 11
 
 ## Current milestone
 
-**Milestone 22:** IN PROGRESS
+**Milestone 23:** IN PROGRESS
 
-Reliability.
+Production deployment.
 
 ---
 
 ## Next action
 
-Begin M22 — reliability.
+Begin M23 — production deployment.
 
 External self-review script intentionally not invoked.
 
-Continue M22 — reliability
+Continue M23 — production deployment
 
 See TASKS.md and AUTOPILOT.md.
 

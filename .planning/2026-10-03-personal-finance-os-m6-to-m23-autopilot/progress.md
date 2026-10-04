@@ -84,6 +84,14 @@
 - Critical review: no BLOCKER/CRITICAL/HIGH findings. Distributed limiter storage and append-only audit-log wiring are explicit M22/M23 deployment follow-ups.
 - M21 is ready for milestone commit; next milestone is M22 reliability.
 
+### M22 completion
+- Added migration 0016 `job_runs`, generic start/complete/fail/monitored-job helpers, and redacted structured JSON logging.
+- Replaced static health response with a DB readiness check returning healthy/degraded status without connection details.
+- Added encrypted custom-format `pg_dump` backup, explicit restore, and non-mutating archive verification scripts; shell syntax and an actual local encrypted archive verification passed.
+- Quality gate passed: typecheck, lint, 163 unit/integration tests, production build, 11 Playwright tests in a single worker, and `git diff --check`.
+- Critical review found no BLOCKER/CRITICAL/HIGH findings. pg-boss worker composition remains M23 scope.
+- M22 is ready for milestone commit; next milestone is M23 production deployment.
+
 ## Session: 2026-10-03
 
 ### Current Status

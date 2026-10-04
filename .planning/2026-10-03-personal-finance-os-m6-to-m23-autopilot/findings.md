@@ -73,6 +73,15 @@
 - The V1 limiter remains process-local because no shared cache is present. Distributed enforcement and append-only audit-log wiring are production follow-ups; these are documented rather than hidden.
 - M21 gate classification: BLOCKER 0, CRITICAL 0, HIGH 0, MEDIUM 2 (shared limiter and audit-log persistence before multi-instance/public deployment), LOW 0. Local single-user development remains safe and deterministic; M22/M23 must close the MEDIUM deployment items before production release.
 
+## M22 reliability start (2026-10-04)
+- The repository had only a static health response, no structured logger, no worker/job-run persistence, and no backup scripts. PostgreSQL is available through the existing `DATABASE_URL`; pg-boss is documented but not yet installed or used by current milestones.
+- M22 will add encrypted `pg_dump`/restore/verification scripts, a database-backed `job_runs` monitor usable by future workers, structured redacted logging, and a readiness health check that reports database status without leaking connection details.
+
+## M22 reliability completion (2026-10-04)
+- Migration 0016 is applied locally and records generic job attempts without coupling domain services to a queue vendor. Failed job messages are capped and redacted.
+- Backup verification was exercised against the live local development database using a temporary encrypted archive; `pg_restore --list` succeeded and the script removed its temporary plaintext dump.
+- The first parallel E2E run had one calendar navigation timeout marked flaky; a single-worker rerun passed all 11 tests. No source regression was reproduced.
+
 ## M14 recovery (2026-10-04)
 - HEAD `492de29` completes M13; no tracked changes. User `AGENTS.md` and planning controls are untracked and must be preserved.
 - M14 requires stored mobile adviser conversation, current deterministic snapshot, structured summary plus bounded last-10 window, and draft-only answers. M16 owns generation/compression of durable summaries.

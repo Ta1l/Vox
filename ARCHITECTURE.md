@@ -390,6 +390,8 @@ M20 adds: user-configurable custom provider (OpenAI-compatible).
 
 M21 adds a production request-security boundary in `middleware.ts`: fail-closed operator session cookie authentication, same-origin validation for state-changing API requests, process-local request limits, and browser security headers. Domain services remain user-scoped; replacing the V1 operator token with a multi-user session provider is a later authentication milestone.
 
+M22 adds database readiness checks, redacted JSON logging, encrypted backup/restore scripts, and a persistent `job_runs` monitor. The monitor is adapter-agnostic so a future pg-boss worker can report idempotent job attempts without changing financial services.
+
 Provider selection priority:
 1. User custom provider (if configured and enabled)
 2. System OpenAI provider (OPENAI_API_KEY environment)

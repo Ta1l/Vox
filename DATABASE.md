@@ -1146,12 +1146,17 @@ const summary = await db
 ### Automated backups
 
 ```bash
-# pg_dump daily backup
-pg_dump -U postgres -h localhost finapp > backup_$(date +%Y%m%d).sql
+# Encrypted backup (never leaves a plaintext dump behind)
+DATABASE_URL=... BACKUP_PASSPHRASE=... BACKUP_DIR=/backups ./scripts/backup.sh
 
-# Restore
-psql -U postgres -h localhost finapp < backup_YYYYMMDD.sql
+# Verify an archive without changing a database
+BACKUP_PASSPHRASE=... ./scripts/verify-backup.sh /backups/finapp_*.dump.gz.gpg
+
+# Restore (explicitly destructive to the target database)
+DATABASE_URL=... BACKUP_PASSPHRASE=... ./scripts/restore.sh /backups/finapp_YYYYMMDDTHHMMSSZ.dump.gz.gpg
 ```
+
+The backup script uses a `pg_dump` custom archive, gzip compression, and AES-256 GPG encryption. Temporary plaintext is mode `0600` and removed immediately after encryption. Store `BACKUP_PASSPHRASE` outside the repository and test restore verification regularly.
 
 ### Point-in-time recovery
 
