@@ -207,7 +207,9 @@ provider abstraction with deterministic Financial Engine
 
 ## Current database state
 
-PostgreSQL schema and migrations are implemented through migration 0012 (AI conversations, messages, summaries, and usage logs).
+PostgreSQL schema and migrations are implemented through migration 0013 (notifications and push subscriptions).
+
+M18 notification scheduling, ownership-scoped APIs, generic mobile UI, manifest, and service-worker click handling are complete. Quality gate passed: typecheck, lint, 146 unit/integration tests, production build, and 9 Playwright tests. Push delivery is deferred when VAPID/web-push infrastructure is not configured; independent Opus audit remains recommended before production release.
 
 ---
 
@@ -243,7 +245,7 @@ Unit/integration suite: 145 tests passed. Playwright mobile navigation suite: 8 
 
 ## Current milestone
 
-**Milestone 18:** IN PROGRESS
+**Milestone 19:** IN PROGRESS
 
 Notifications (PWA and Web Push).
 
@@ -251,7 +253,7 @@ Notifications (PWA and Web Push).
 
 ## Next action
 
-M17 complete and committed. Begin M18 — notifications.
+Begin M19 — transaction import.
 
 External self-review script intentionally not invoked.
 

@@ -578,13 +578,13 @@ Implemented 45 deterministic financial scenarios covering the nine required doma
 
 **QUALITY GATE:** typecheck, lint, 145 unit/integration tests, production build, and 8 Playwright tests passed. Targeted AI eval/ownership/provider suite passed 55 tests. Live model-quality scoring was not run because no OpenAI API key is configured; policy and deterministic financial invariants are covered offline. Independent Opus audit remains recommended before production release.
 
-Git commit: pending
+Git commit: 8963d28
 
 ---
 
 # M18 — Notifications
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement PWA and Web Push.
 
@@ -596,6 +596,10 @@ Notifications:
 - expected incoming payment;
 - delayed payment;
 - weekly budget warning.
+
+Implemented notification persistence, deterministic scheduling, ownership-scoped APIs, generic mobile UI, PWA manifest/service worker, and strict Web Push endpoint validation.
+
+**QUALITY GATE:** typecheck, lint, 146 unit/integration tests, production build, and 9 Playwright tests passed. Web Push delivery remains safely disabled without VAPID/web-push configuration.
 
 ---
 

@@ -13,6 +13,7 @@ const navItems = [
   { href: "/envelopes", label: "Резервы", icon: "🛡️" },
   { href: "/planning", label: "План", icon: "🗓️" },
   { href: "/chat", label: "Советник", icon: "💬" },
+  { href: "/notifications", label: "События", icon: "🔔" },
 ];
 
 export default function BottomNav() {

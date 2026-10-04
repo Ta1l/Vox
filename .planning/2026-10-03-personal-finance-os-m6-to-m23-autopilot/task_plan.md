@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Commit M17 with its completed quality gate, then implement M18 notifications.
+Commit M18 with its completed quality gate, then implement M19 transaction import.
 
 ## Current Phase
-Phase 4 — M17 complete; M18 notifications next
+Phase 4 — M18 complete; M19 transaction import next
 
 ## Phases
 
@@ -42,6 +42,7 @@ Phase 4 — M17 complete; M18 notifications next
 - [x] Implement M16 automatic conversation compression and measured prompt size
 - [x] Build M17 deterministic AI policy/evaluation harness with 45 adversarial financial cases
 - [x] Complete M17 full quality gate and critical review
+- [x] Complete M18 notification APIs, UI, tests, and quality gate
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately
@@ -67,3 +68,4 @@ Phase 4 — M17 complete; M18 notifications next
 | M10 targeted dashboard test expected only same-week dates | Monday-based week correctly includes 30 September; updated expected weekly expense total. |
 | M14 local migration command could not replay old schema | Existing local DB had all baseline tables but empty drizzle migration journal; verified 0012 SQL and applied it to local dev DB for integration tests. Existing migration tracking needs reconciliation before future CLI migrations. |
 | M14 E2E chat send failed on missing fixed development user | Kept navigation E2E seed-independent; exercised user-scoped chat send via integration test with dedicated test users. |
+| Default Vitest fork workers timed out under constrained memory; `--poolOptions` is unsupported in this Vitest version | Re-ran the full suite with `--pool=threads` and capped Node heap; 21 files / 146 tests passed. |

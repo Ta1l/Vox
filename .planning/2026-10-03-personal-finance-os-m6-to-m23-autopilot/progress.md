@@ -43,6 +43,17 @@
 - Critical review confirmed model output amounts and available limits are safe integers; future income is never added to free cash; target ownership is checked; policy text changes fail the eval contract tests. No BLOCKER/CRITICAL/HIGH findings remain.
 - Live model scoring was not run without an API key; deterministic policy/financial evaluation is complete. M17 commit pending; next milestone M18 notifications.
 
+### M17 documentation recovery
+- M17 quality-gate commit confirmed as `8963d28`.
+
+### M18 implementation
+- Added migration 0013, notification/push-subscription schema, deterministic candidate scheduling, idempotent persistence, read transitions, claim locking, and strict push endpoint allow-list validation.
+- Added ownership-scoped APIs, mobile notifications page, navigation entry, manifest, and service-worker click handling.
+- Notification messages remain generic and exclude amounts and sensitive details.
+- Quality gate passed: typecheck, lint, 146 unit/integration tests, production build, and 9 Playwright tests. Vitest required the supported `--pool=threads` mode under constrained memory.
+- Critical review found no BLOCKER/CRITICAL/HIGH findings: generic payloads prevent sensitive lock-screen leakage, user ownership is enforced, global notification dedupe uses a stable user entity key, and push endpoints are origin allow-listed.
+- M18 complete; next milestone M19 transaction import.
+
 ## Session: 2026-10-03
 
 ### Current Status

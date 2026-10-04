@@ -69,4 +69,9 @@ test.describe("Mobile Application", () => {
     await expect(page.getByRole("button", { name: "Новый чат" })).toBeVisible();
     await expect(page.getByText("Начать разговор")).toBeVisible();
   });
+
+  test("should render notifications page", async ({ page }) => {
+    await page.goto("/notifications");
+    await expect(page.getByRole("heading", { name: "Уведомления" })).toBeVisible();
+  });
 });
