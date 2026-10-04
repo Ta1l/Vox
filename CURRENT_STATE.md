@@ -4,7 +4,7 @@ Last updated: 2026-10-04
 
 ## Project status
 
-STATUS: M20 COMPLETE — QUALITY GATE PASSED — M21 IN PROGRESS
+STATUS: M23 COMPLETE — QUALITY GATE PASSED — M24 FINAL AUDIT PENDING
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -207,7 +207,7 @@ provider abstraction with deterministic Financial Engine
 
 ## Current database state
 
-PostgreSQL schema and migrations are implemented through migration 0015 (transaction imports and user AI provider configuration).
+PostgreSQL schema and migrations are implemented through migration 0016 (transaction imports, user AI provider configuration, and job-run monitoring).
 
 M18 notification scheduling, ownership-scoped APIs, generic mobile UI, manifest, and service-worker click handling are complete. Quality gate passed: typecheck, lint, 146 unit/integration tests, production build, and 9 Playwright tests. Push delivery is deferred when VAPID/web-push infrastructure is not configured; independent Opus audit remains recommended before production release.
 
@@ -216,6 +216,8 @@ M19 manual CSV transaction import is complete: staging, normalization, deduplica
 M20 bank-provider architecture and user-configurable OpenAI-compatible provider are complete. Bank adapters return normalized rows without writing financial records; custom provider keys are AES-256-GCM encrypted, provider selection is custom → system → error, and all responses use the existing structured-output validation pipeline. Quality gate passed: typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests. The limiter is process-local for V1 and must move to shared storage during M21 deployment hardening; DNS-based SSRF defenses also remain a M21 task.
 
 M21 security hardening is complete. Production now fails closed unless `APP_AUTH_TOKEN` and `APP_URL` are configured and requests carry the HttpOnly `fin_session` cookie obtained from `/api/auth/login`; development remains seed-compatible. Middleware adds same-origin checks for state-changing API requests, general/import rate limits, CSP/security headers, and generic authentication errors. Custom provider requests re-check DNS resolution for private addresses in production, AI prompt text is sanitized as untrusted data, and PostgreSQL binds to localhost in the development compose file. Distributed limiter storage and append-only financial audit-log wiring remain pre-public-deployment follow-ups.
+
+M22 reliability is complete: encrypted custom-format backup/restore/verification scripts, readiness health checks, redacted JSON logging, and migration 0016 `job_runs` monitoring primitives are available.
 
 ---
 
@@ -233,7 +235,7 @@ Not deployed.
 
 ## Current tests
 
-Unit/integration suite: 160 tests passed. Playwright mobile navigation suite: 11 tests passed. Typecheck, lint, and production build passed after M21 changes.
+Unit/integration suite: 163 tests passed. Playwright mobile navigation suite: 11 tests passed in a single worker. Typecheck, lint, production build, Docker build, Compose validation, Caddy validation, and encrypted backup verification passed.
 
 ---
 
@@ -251,19 +253,21 @@ Unit/integration suite: 160 tests passed. Playwright mobile navigation suite: 11
 
 ## Current milestone
 
-**Milestone 23:** IN PROGRESS
+**Milestone 24:** PENDING
 
-Production deployment.
+Final independent product audit.
 
 ---
 
 ## Next action
 
-Begin M23 — production deployment.
+M23 is complete locally; M24 independent audit remains pending.
 
 External self-review script intentionally not invoked.
 
-Continue M23 — production deployment
+Continue M24 — final audit when an independent reviewer is available.
+
+M23 deployment artifacts are implemented and locally validated: multi-stage Docker image, production Compose topology (`caddy`, `web`, one-shot `migrate`, `worker`, `postgres`), internal-only database network, health-gated startup, Caddy TLS reverse proxy, production env template, worker heartbeat, and authenticated production smoke script. No real VPS or production secrets were touched. `docker compose config`, Docker image build, worker startup/shutdown, Caddy validation, and all pre-existing test gates pass. `npm audit --omit=dev` still reports two nested PostCSS advisories requiring a breaking Next.js 16 upgrade; this remains a release-blocking dependency follow-up rather than an unsafe force upgrade. The worker currently provides a supervised heartbeat and job-monitoring integration point; no domain job queue is enabled until pg-boss is introduced.
 
 See TASKS.md and AUTOPILOT.md.
 

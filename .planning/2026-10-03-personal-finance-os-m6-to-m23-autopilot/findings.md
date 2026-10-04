@@ -82,6 +82,11 @@
 - Backup verification was exercised against the live local development database using a temporary encrypted archive; `pg_restore --list` succeeded and the script removed its temporary plaintext dump.
 - The first parallel E2E run had one calendar navigation timeout marked flaky; a single-worker rerun passed all 11 tests. No source regression was reproduced.
 
+## M23 production deployment (2026-10-04)
+- Production Compose has no PostgreSQL host port, uses an internal network, waits for health-gated migrations before web/worker, and exposes only Caddy ports 80/443. The web image is non-root and receives runtime secrets only through Compose environment variables.
+- Docker build first failed because Next route module imports require `DATABASE_URL` while collecting page data. A build-stage dummy URL fixes packaging; no database call occurs during static generation.
+- `npm audit --omit=dev` reports two nested PostCSS vulnerabilities under Next.js 15.5.27; automated remediation is a breaking Next.js 16 upgrade. Classified MEDIUM/release-blocking for public deployment and documented for planned migration.
+
 ## M14 recovery (2026-10-04)
 - HEAD `492de29` completes M13; no tracked changes. User `AGENTS.md` and planning controls are untracked and must be preserved.
 - M14 requires stored mobile adviser conversation, current deterministic snapshot, structured summary plus bounded last-10 window, and draft-only answers. M16 owns generation/compression of durable summaries.

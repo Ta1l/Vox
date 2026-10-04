@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Implement M23 production deployment and quality gate.
+Complete final production gate and record release caveats.
 
 ## Current Phase
-Phase 4 — M23 production deployment in progress
+Phase 5 — Final production gate in progress
 
 ## Phases
 
@@ -47,15 +47,15 @@ Phase 4 — M23 production deployment in progress
 - [x] Implement M20 BankProvider architecture and quality gate
 - [x] Implement M21 security hardening and quality gate
 - [x] Implement M22 reliability and quality gate
-- [ ] Implement each remaining unfinished milestone in TASKS.md
-- [ ] Apply M10/M12/M17/M23 quality gates
-- [ ] Commit every completed milestone separately
+- [x] Implement M23 production deployment and quality gate
+- [x] Apply M10/M12/M17/M23 quality gates
+- [x] Commit every completed milestone separately
 - **Status:** in_progress
 
 ### Phase 5: Final production gate
-- [ ] Run full production/security/financial verification
-- [ ] Record any required independent audit caveat
-- **Status:** pending
+- [x] Run full production/security/financial verification
+- [x] Record required independent audit and deployment caveats
+- **Status:** complete
 
 ## Decisions Made
 | Decision | Rationale |
@@ -67,6 +67,7 @@ Phase 4 — M23 production deployment in progress
 | Treat distributed rate limiting and append-only audit-log wiring as deployment-critical follow-ups | The V1 repository has no shared cache or existing audit table; silently pretending process-local controls are multi-instance-safe would be misleading. |
 | Use encrypted custom-format PostgreSQL backups with a separate restore verification command | Backups must not leave plaintext dumps behind; verification can inspect archive contents without mutating a database. |
 | Keep M22 worker monitoring adapter-agnostic | Current repository has no pg-boss worker dependency; persistent run tracking is ready for M23 composition without inventing a second queue. |
+| Do not force-upgrade Next.js for the PostCSS audit finding | `npm audit fix --force` requests a breaking Next.js 16 upgrade; release must schedule compatibility work instead of silently changing the framework. |
 
 ## Errors Encountered
 | Error | Resolution |
@@ -82,3 +83,4 @@ Phase 4 — M23 production deployment in progress
 | M20 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with `NODE_OPTIONS=--max-old-space-size=512 npm test -- --pool=threads`; 26 files / 156 tests passed. |
 | M21 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with the same constrained command; 27 files / 160 tests passed. |
 | M22 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with the same constrained command; 28 files / 163 tests passed. |
+| Initial Docker build failed because route imports require DATABASE_URL at build time | Added a build-only dummy DATABASE_URL and copied migrations into the runtime image; subsequent Docker build passed. |

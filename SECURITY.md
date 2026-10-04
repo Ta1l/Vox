@@ -639,6 +639,8 @@ npm outdated
 npm install package@latest
 ```
 
+Current M23 audit note: `npm audit --omit=dev` reports two PostCSS advisories in the version bundled by Next.js 15.5.27. The available automated fix upgrades Next.js to 16 and is intentionally deferred as a planned breaking migration; do not run `npm audit fix --force` on production without a compatibility review and full gate.
+
 ### Dependency scanning
 
 GitHub Dependabot alerts включены.

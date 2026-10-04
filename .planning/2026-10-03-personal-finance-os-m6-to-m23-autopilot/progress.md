@@ -173,3 +173,15 @@
 - Specialized audit found and fixed concurrent envelope-funding oversubscription by serializing user-level mutations; added regression coverage.
 - Final gate passed: lint, typecheck, 80 tests, build, and 7 Playwright tests.
 - No BLOCKER/CRITICAL/HIGH findings remain. External Claude/Opus audit is unavailable in this environment and remains recommended before production release.
+
+### M23 completion
+- Added non-root multi-stage Dockerfile, `.dockerignore`, production env template, Caddy TLS reverse proxy, and Compose services for PostgreSQL, one-shot migrations, web, worker, and Caddy with internal network isolation and health-gated startup.
+- Added worker heartbeat/shutdown smoke and authenticated `scripts/production-smoke.sh`; Docker build initially exposed a missing build-time `DATABASE_URL`, fixed with a build-only dummy value. Runtime secrets remain Compose-provided.
+- `docker compose config`, Docker image build, worker container smoke, typecheck, lint, production build, 163 tests, 11 single-worker Playwright tests, backup verification, and shell syntax checks passed.
+- Critical review found no BLOCKER/CRITICAL/HIGH architecture findings. Remaining release caveat: two nested PostCSS advisories require a planned breaking Next.js 16 upgrade before public production release; no real VPS or production secrets were touched.
+
+### Final production gate
+- M23 is complete in the local repository. No production VPS or real secrets were accessed, and no `git push` was performed.
+- Deterministic financial, AI safety, security, database, migration, backup verification, Docker, Compose, Caddy, worker, build, unit/integration, and Playwright checks passed.
+- Independent Claude/Opus financial audit integration is unavailable in this environment; deterministic adversarial coverage passed, and independent audit remains recommended before release.
+- Release blockers/caveats: public deployment must resolve the two nested PostCSS advisories through a reviewed Next.js 16 migration, replace process-local rate limiting with shared storage, and connect the worker to a real idempotent pg-boss job queue before multi-instance operation.

@@ -392,6 +392,8 @@ M21 adds a production request-security boundary in `middleware.ts`: fail-closed 
 
 M22 adds database readiness checks, redacted JSON logging, encrypted backup/restore scripts, and a persistent `job_runs` monitor. The monitor is adapter-agnostic so a future pg-boss worker can report idempotent job attempts without changing financial services.
 
+M23 packages the monolith as a non-root multi-stage image and deploys Caddy, web, one-shot migrations, worker, and PostgreSQL through a health-gated Compose topology. PostgreSQL is on an internal network with no host port; Caddy is the only public entrypoint.
+
 Provider selection priority:
 1. User custom provider (if configured and enabled)
 2. System OpenAI provider (OPENAI_API_KEY environment)

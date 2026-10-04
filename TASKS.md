@@ -689,7 +689,7 @@ Implement user-configurable OpenAI-compatible AI provider.
 
 **QUALITY GATE:** typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests passed. Critical review found no BLOCKER/CRITICAL/HIGH findings. Process-local rate limiting and DNS-rebinding SSRF protection are explicitly deferred to M21 deployment hardening.
 
-Git commit: pending
+Git commit: eb0696e
 
 See AGENTS.md for full architecture.
 
@@ -718,7 +718,7 @@ M21 implementation scope: production fail-closed session boundary using `APP_AUT
 
 **QUALITY GATE:** typecheck, lint, 160 unit/integration tests, production build, 11 Playwright tests, and `git diff --check` passed. Critical review found no BLOCKER/CRITICAL/HIGH findings. The remaining audit-log and distributed-limiter items are documented production follow-ups for M22/M23.
 
-Git commit: pending
+Git commit: 159feab
 
 ---
 
@@ -741,13 +741,13 @@ M22 implementation scope: encrypted custom-format PostgreSQL backup/restore/veri
 
 **QUALITY GATE:** typecheck, lint, 163 unit/integration tests, production build, 11 Playwright tests (single worker), `git diff --check`, shell syntax checks, and an encrypted local backup plus `pg_restore --list` verification passed. Critical review found no BLOCKER/CRITICAL/HIGH findings.
 
-Git commit: pending
+Git commit: 52b9b13
 
 ---
 
 # M23 — Production deployment
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Deploy to VPS.
 
@@ -763,6 +763,12 @@ Verify HTTPS.
 Protect initial single-user deployment from public access.
 
 Run production smoke tests.
+
+Implemented production Dockerfile, `.dockerignore`, Caddy TLS reverse-proxy config, Compose topology with internal PostgreSQL, migration gate, worker, web, and health checks, production env template, and authenticated smoke script. No VPS deployment or production secret use was performed in this environment.
+
+**QUALITY GATE:** typecheck, lint, 163 unit/integration tests, production build, 11 Playwright tests (single worker), `git diff --check`, `docker compose config`, Docker image build, Caddy config validation, worker heartbeat/shutdown smoke, backup verification, and shell syntax checks passed. Critical review found no BLOCKER/CRITICAL/HIGH architecture findings. `npm audit --omit=dev` reports two nested PostCSS advisories requiring a breaking Next.js 16 upgrade; this must be resolved before public production release. The worker currently provides a supervised heartbeat and job-monitoring integration point; no domain job queue is enabled until pg-boss is introduced.
+
+Git commit: pending
 
 ---
 
