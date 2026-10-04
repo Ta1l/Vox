@@ -4,7 +4,7 @@ Last updated: 2026-10-04
 
 ## Project status
 
-STATUS: M19 COMPLETE — QUALITY GATE PASSED — M20 IN PROGRESS
+STATUS: M20 COMPLETE — QUALITY GATE PASSED — M21 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -207,11 +207,13 @@ provider abstraction with deterministic Financial Engine
 
 ## Current database state
 
-PostgreSQL schema and migrations are implemented through migration 0013 (notifications and push subscriptions).
+PostgreSQL schema and migrations are implemented through migration 0015 (transaction imports and user AI provider configuration).
 
 M18 notification scheduling, ownership-scoped APIs, generic mobile UI, manifest, and service-worker click handling are complete. Quality gate passed: typecheck, lint, 146 unit/integration tests, production build, and 9 Playwright tests. Push delivery is deferred when VAPID/web-push infrastructure is not configured; independent Opus audit remains recommended before production release.
 
 M19 manual CSV transaction import is complete: staging, normalization, deduplication, deterministic category hints, existing-entry matching, and explicit confirmation. Quality gate passed: typecheck, lint, 150 unit/integration tests, production build, and 10 Playwright tests.
+
+M20 bank-provider architecture and user-configurable OpenAI-compatible provider are complete. Bank adapters return normalized rows without writing financial records; custom provider keys are AES-256-GCM encrypted, provider selection is custom → system → error, and all responses use the existing structured-output validation pipeline. Quality gate passed: typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests. The limiter is process-local for V1 and must move to shared storage during M21 deployment hardening; DNS-based SSRF defenses also remain a M21 task.
 
 ---
 
@@ -229,7 +231,7 @@ Not deployed.
 
 ## Current tests
 
-Unit/integration suite: 150 tests passed. Playwright mobile navigation suite: 10 tests passed. Typecheck, lint, and production build passed.
+Unit/integration suite: 156 tests passed. Playwright mobile navigation suite: 11 tests passed. Typecheck, lint, and production build passed.
 
 ---
 
@@ -247,19 +249,19 @@ Unit/integration suite: 150 tests passed. Playwright mobile navigation suite: 10
 
 ## Current milestone
 
-**Milestone 20:** IN PROGRESS
+**Milestone 21:** IN PROGRESS
 
-Bank provider architecture.
+Security hardening.
 
 ---
 
 ## Next action
 
-Begin M20 — bank provider architecture.
+Begin M21 — security hardening.
 
 External self-review script intentionally not invoked.
 
-Continue M20 — bank provider architecture
+Continue M21 — security hardening
 
 See TASKS.md and AUTOPILOT.md.
 

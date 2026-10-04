@@ -15,6 +15,7 @@ const navItems = [
   { href: "/chat", label: "Советник", icon: "💬" },
   { href: "/notifications", label: "События", icon: "🔔" },
   { href: "/imports", label: "Импорт", icon: "📥" },
+  { href: "/settings/ai-provider", label: "AI", icon: "⚙️" },
 ];
 
 export default function BottomNav() {

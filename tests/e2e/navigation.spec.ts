@@ -80,4 +80,10 @@ test.describe("Mobile Application", () => {
     await expect(page.getByRole("heading", { name: "Импорт операций" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Импортировать" })).toBeVisible();
   });
+
+  test("should render AI provider settings", async ({ page }) => {
+    await page.goto("/settings/ai-provider");
+    await expect(page.getByRole("heading", { name: "AI-провайдер" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Сохранить и проверить" })).toBeVisible();
+  });
 });

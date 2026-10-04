@@ -42,6 +42,11 @@
 - Imported descriptions are bounded and strip HTML-like delimiters before storage. No AI classification is invoked; deterministic keyword mapping supplies category hints and uncertain rows remain REVIEW.
 - Confirmation is the only import path that creates income/expense records; matching existing records avoids duplicate financial entries.
 
+## GitHub connectivity check (2026-10-04)
+- Local repository has no `origin` remote configured; `git remote -v` is empty, so commits cannot appear on GitHub automatically.
+- `https://github.com/Ta1l/Vox` is reachable and public, but its API reports `default_branch: main`, `size: 0`, and no branches/commits. It is currently an empty repository and does not contain the local Personal Finance OS history.
+- Local HEAD is `a2ced44` (`feat(m19): implement transaction import`); M20 BankProvider changes are currently uncommitted. No push was performed.
+
 ## M10 Dashboard discovery (2026-10-03)
 - Existing financial snapshot correctly excludes IN_TRANSIT from available cash and reports it separately.
 - Dashboard needs one deterministic server response combining snapshot, earned/expense period totals, pending/overdue occurrences, active debts, goals, and alerts.
@@ -53,6 +58,13 @@
 - The Claude/Opus auditor instructions exist in `.claude/agents/financial-auditor.md`, but this environment offers no callable Claude/Opus integration. Independent audit must remain a pre-production caveat; deterministic adversarial tests are required now.
 - Simulation is read-only: DB-backed snapshot and owned entity IDs are authoritative; inputs are validated in integer kopecks; model-provided arithmetic is never trusted.
 - Need distinguish cash-spending debt payments from goal reservations to avoid falsely counting savings transfer twice.
+
+## M20 user-configurable AI provider (2026-10-04)
+- Migration 0015 adds one encrypted-key provider configuration per user. The custom adapter calls `POST {baseUrl}/v1/responses` with strict JSON-schema output and feeds responses through the existing validator and usage logger.
+- Provider selection is custom enabled config, then system `OPENAI_API_KEY`, then a safe no-provider error. Chat, budget proposals, and connection tests use the same boundary.
+- Base URL validation requires HTTPS, rejects credentials/query/fragment/non-443 ports, and blocks literal private hosts in production. DNS-aware SSRF protection remains a M21 hardening item.
+- The AI limiter enforces 10 requests/minute and 100/hour per user in-process; shared/distributed storage is required before multi-instance production deployment.
+- Quality gate passed with 26 files/156 unit-integration tests and 11 Playwright tests, plus typecheck, lint, build, and `git diff --check`. No BLOCKER/CRITICAL/HIGH findings remain.
 
 ## M14 recovery (2026-10-04)
 - HEAD `492de29` completes M13; no tracked changes. User `AGENTS.md` and planning controls are untracked and must be preserved.

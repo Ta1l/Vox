@@ -5,6 +5,9 @@ import { bankConnections, bankTransactions, type BankTransaction } from "@/lib/d
 import { incomeEntries } from "@/lib/db/schema/income";
 import { expenseEntries } from "@/lib/db/schema/expenses";
 import * as money from "@/lib/money";
+import type { BankProvider } from "@/lib/domain/bank/bankProvider";
+
+export interface ImportedTransactionRow { externalId: string; amountKopecks: number; transactionDate: string; description: string; categoryHint?: string; }
 
 const MAX_DESCRIPTION_LENGTH = 500;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -91,10 +94,10 @@ export function mapCategory(description: string, hint?: string) {
   return "other";
 }
 
-async function getOrCreateManualConnection(userId: string) {
-  const [connection] = await db.insert(bankConnections).values({ userId, providerName: "manual-csv", bankName: "Manual CSV" }).onConflictDoNothing({ target: [bankConnections.userId, bankConnections.providerName] }).returning();
+async function getOrCreateManualConnection(userId: string, providerName = "manual-csv") {
+  const [connection] = await db.insert(bankConnections).values({ userId, providerName, bankName: providerName === "manual-csv" ? "Manual CSV" : providerName }).onConflictDoNothing({ target: [bankConnections.userId, bankConnections.providerName] }).returning();
   if (connection) return connection;
-  const existing = await db.query.bankConnections.findFirst({ where: and(eq(bankConnections.userId, userId), eq(bankConnections.providerName, "manual-csv")) });
+  const existing = await db.query.bankConnections.findFirst({ where: and(eq(bankConnections.userId, userId), eq(bankConnections.providerName, providerName)) });
   if (!existing) throw new Error("Unable to create import connection");
   return existing;
 }
@@ -111,8 +114,12 @@ async function findMatch(userId: string, row: { amountKopecks: number; transacti
 }
 
 export async function importCsv(userId: string, csv: string) {
-  const connection = await getOrCreateManualConnection(userId);
-  const rows = parseCsv(csv); const imported: BankTransaction[] = [];
+  return importRows(userId, parseCsv(csv), "manual-csv");
+}
+
+export async function importRows(userId: string, rows: ImportedTransactionRow[], providerName = "manual-csv") {
+  const connection = await getOrCreateManualConnection(userId, providerName);
+  const imported: BankTransaction[] = [];
   for (const row of rows) {
     const existing = await db.query.bankTransactions.findFirst({ where: and(eq(bankTransactions.connectionId, connection.id), eq(bankTransactions.externalId, row.externalId)) });
     if (existing) { imported.push({ ...existing, importStatus: "DUPLICATE" }); continue; }
@@ -122,6 +129,10 @@ export async function importCsv(userId: string, csv: string) {
   }
   await db.update(bankConnections).set({ lastSyncAt: new Date() }).where(eq(bankConnections.id, connection.id));
   return imported;
+}
+
+export async function importFromProvider(userId: string, provider: BankProvider) {
+  return importRows(userId, await provider.fetchTransactions(), provider.providerName);
 }
 
 export async function listImportedTransactions(userId: string) { return db.query.bankTransactions.findMany({ where: eq(bankTransactions.userId, userId), orderBy: [asc(bankTransactions.transactionDate), asc(bankTransactions.createdAt)] }); }

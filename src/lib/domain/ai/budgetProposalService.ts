@@ -2,9 +2,8 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { getFinancialSnapshotForAI } from "./aiTypes";
 import { createAllocations, getPlanningCycle, getCycleSummary } from "@/lib/domain/planning/planningService";
-import { requestValidatedAI } from "./aiRequestService";
+import { getAIProvider, requestValidatedAI } from "./aiRequestService";
 import type { AIProvider } from "./aiTypes";
-import { OpenAIProvider } from "./openaiProvider";
 import { db } from "@/lib/db/client";
 import { debts } from "@/lib/db/schema/debts";
 import { goals } from "@/lib/db/schema/goals";
@@ -18,10 +17,10 @@ export const budgetProposalSchema = z.object({ snapshotVersion: z.string().lengt
 export type BudgetProposal = z.infer<typeof budgetProposalSchema> & { totalAllocatedKopecks: number; remainingDiscretionaryKopecks: number; protectionsRespected: { hardObligationsCovered: boolean; hardEnvelopesFunded: boolean; expectedIncomeNotSpent: boolean } };
 const budgetJsonSchema: Record<string, unknown> = { type: "object", properties: { snapshotVersion: { type: "string" }, summary: { type: "string" }, allocations: { type: "array", items: { type: "object", properties: { targetType: { type: "string", enum: ["DEBT", "GOAL", "ENVELOPE", "GENERAL"] }, targetId: { type: ["string", "null"] }, targetName: { type: "string" }, amountKopecks: { type: "integer" }, reason: { type: "string" }, priority: { type: "integer" } }, required: ["targetType", "targetId", "targetName", "amountKopecks", "reason", "priority"], additionalProperties: false } }, alternatives: { type: "array", items: { type: "object", properties: { name: { type: "string" }, description: { type: "string" }, tradeoffs: { type: "string" } }, required: ["name", "description", "tradeoffs"], additionalProperties: false } }, warnings: { type: "array", items: { type: "string" } } }, required: ["snapshotVersion", "summary", "allocations", "alternatives", "warnings"], additionalProperties: false };
 
-export async function generateBudgetProposal(userId: string, cycleId: string, provider: AIProvider = new OpenAIProvider()) {
-  if (!process.env.OPENAI_API_KEY && provider instanceof OpenAIProvider) throw new Error("OPENAI_API_KEY is not configured");
+export async function generateBudgetProposal(userId: string, cycleId: string, provider?: AIProvider) {
+  const selectedProvider = provider ?? await getAIProvider(userId);
   const [cycle, snapshot] = await Promise.all([getPlanningCycle(userId, cycleId), getFinancialSnapshotForAI(userId)]);
-  const raw = await requestValidatedAI(provider, { userId, system: BUDGET_PROPOSAL_POLICY, userMessage: JSON.stringify({ cycle: { startDate: cycle.startDate, endDate: cycle.endDate }, snapshot }), schemaName: "budget_proposal", schema: budgetJsonSchema, validate: (value) => budgetProposalSchema.parse(value) });
+  const raw = await requestValidatedAI(selectedProvider, { userId, system: BUDGET_PROPOSAL_POLICY, userMessage: JSON.stringify({ cycle: { startDate: cycle.startDate, endDate: cycle.endDate }, snapshot }), schemaName: "budget_proposal", schema: budgetJsonSchema, validate: (value) => budgetProposalSchema.parse(value) });
   return validateBudgetProposal(userId, cycleId, raw);
 }
 

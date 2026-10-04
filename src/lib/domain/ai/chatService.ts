@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { OpenAIProvider } from "./openaiProvider";
-import { requestValidatedAI } from "./aiRequestService";
+import { getAIProvider, requestValidatedAI } from "./aiRequestService";
 import { CONVERSATION_SUMMARY_POLICY } from "./aiPolicy";
 import { appendMessage, buildConversationContext, conversationSummarySchema, getConversationSummary, getMessageStats, getMessageWindow, RECENT_AI_MESSAGES, saveSummary, type ConversationContext } from "./conversationService";
 import type { AIProvider } from "./aiTypes";
@@ -45,16 +44,16 @@ async function compressConversationIfNeeded(userId: string, conversationId: stri
   return { compressed: true, messagesCoveredCount };
 }
 
-export async function requestChatAdvice(userId: string, conversationId: string, message: string, provider: AIProvider = new OpenAIProvider()) {
-  if (!process.env.OPENAI_API_KEY && provider instanceof OpenAIProvider) throw new Error("OPENAI_API_KEY is not configured");
+export async function requestChatAdvice(userId: string, conversationId: string, message: string, provider?: AIProvider) {
+  const selectedProvider = provider ?? await getAIProvider(userId);
   const userMessage = await appendMessage(userId, conversationId, "user", message);
   const context = await buildConversationContext(userId, conversationId);
   const prompt = promptFor(context, message);
   const estimatedPromptTokens = Math.ceil((context.systemPolicy.length + prompt.length) / 4);
-  const result: z.infer<typeof adviceSchema> = await requestValidatedAI(provider, { userId, system: context.systemPolicy, userMessage: prompt, schemaName: "financial_advice", schema: adviceJsonSchema, validate: (value) => adviceSchema.parse(value) });
+  const result: z.infer<typeof adviceSchema> = await requestValidatedAI(selectedProvider, { userId, system: context.systemPolicy, userMessage: prompt, schemaName: "financial_advice", schema: adviceJsonSchema, validate: (value) => adviceSchema.parse(value) });
   const assistantMessage = await appendMessage(userId, conversationId, "assistant", result.answer);
   let compression = { compressed: false, messagesCoveredCount: 0 };
-  try { compression = await compressConversationIfNeeded(userId, conversationId, provider); } catch { /* Keep a successful advice reply; the next turn can retry compression. */ }
+  try { compression = await compressConversationIfNeeded(userId, conversationId, selectedProvider); } catch { /* Keep a successful advice reply; the next turn can retry compression. */ }
   return { conversationId, userMessage, assistantMessage, estimatedPromptTokens, compression, ...result };
 }
 

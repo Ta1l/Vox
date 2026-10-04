@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Commit M19 with its completed quality gate, then implement M20 bank provider architecture.
+Implement M21 security hardening and quality gate.
 
 ## Current Phase
-Phase 4 — M19 complete; M20 bank provider architecture next
+Phase 4 — M21 security hardening in progress
 
 ## Phases
 
@@ -44,6 +44,7 @@ Phase 4 — M19 complete; M20 bank provider architecture next
 - [x] Complete M17 full quality gate and critical review
 - [x] Complete M18 notification APIs, UI, tests, and quality gate
 - [x] Implement M19 transaction import and quality gate
+- [x] Implement M20 BankProvider architecture and quality gate
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately
@@ -58,6 +59,8 @@ Phase 4 — M19 complete; M20 bank provider architecture next
 | Decision | Rationale |
 | Continue existing M6 code | Recovery shows M6 is partially implemented and must not be restarted. |
 | Use deterministic DB/domain validation | Financial truth remains PostgreSQL + Financial Engine; AI is not involved in M6. |
+| Keep the custom AI provider OpenAI-Responses-compatible | Reuses the existing structured-output contract and preserves deterministic post-validation. |
+| Defer shared rate limiting and DNS-aware SSRF checks to M21 | M20 has a bounded process-local limiter and literal private-host blocking; deployment-wide controls require the security-hardening milestone. |
 
 ## Errors Encountered
 | Error | Resolution |
@@ -70,3 +73,4 @@ Phase 4 — M19 complete; M20 bank provider architecture next
 | M14 local migration command could not replay old schema | Existing local DB had all baseline tables but empty drizzle migration journal; verified 0012 SQL and applied it to local dev DB for integration tests. Existing migration tracking needs reconciliation before future CLI migrations. |
 | M14 E2E chat send failed on missing fixed development user | Kept navigation E2E seed-independent; exercised user-scoped chat send via integration test with dedicated test users. |
 | Default Vitest fork workers timed out under constrained memory; `--poolOptions` is unsupported in this Vitest version | Re-ran the full suite with `--pool=threads` and capped Node heap; 21 files / 146 tests passed. |
+| M20 full suite required the supported threaded Vitest mode and local PostgreSQL | Re-ran with `NODE_OPTIONS=--max-old-space-size=512 npm test -- --pool=threads`; 26 files / 156 tests passed. |

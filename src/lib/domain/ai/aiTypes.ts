@@ -20,6 +20,7 @@ export interface FinancialSnapshot {
 }
 
 export interface AIUsage { provider: string; model: string; promptTokens: number; completionTokens: number; totalTokens: number; estimatedCostUsd: number | null; }
+export interface AIProviderConfig { baseUrl: string; modelName: string; apiKey: string; }
 export interface StructuredAIResult<T> { value: T; usage: AIUsage; requestId: string | null; }
 export interface AIProvider {
   generateStructured<T>(params: { userId: string; system: string; userMessage: string; schemaName: string; schema: Record<string, unknown>; validate: (value: unknown) => T; }): Promise<StructuredAIResult<T>>;

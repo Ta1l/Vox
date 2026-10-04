@@ -9,3 +9,4 @@ export * from "./planning";
 export * from "./ai";
 export * from "./notifications";
 export * from "./bank";
+export * from "./aiProviderConfigs";

@@ -627,9 +627,11 @@ Implemented manual CSV staging, strict integer-kopeck normalization, PostgreSQL 
 
 ---
 
-# M20 — Bank provider architecture
+# M20 — Bank provider architecture + AI provider configuration
 
-STATUS: TODO
+STATUS: COMPLETE ✓
+
+## Bank Provider
 
 Implement BankProvider interface.
 
@@ -637,11 +639,65 @@ Do not tightly couple financial domain to any individual Russian bank API.
 
 Add direct providers only after verifying practical API availability and authorization requirements.
 
+## User-Configurable AI Provider
+
+Implement user-configurable OpenAI-compatible AI provider.
+
+**Scope:**
+
+- Database schema: `ai_provider_configs` table with encrypted API keys
+- Encryption utility: AES-256-GCM for API key storage (reuse SECURITY.md pattern)
+- Provider config service: save/get/delete with validation (HTTPS only, max lengths, SSRF protection)
+- Custom provider implementation: `CustomOpenAICompatibleProvider` using same structured output format
+- Provider selection: custom → system → error fallback
+- Test connection API: non-financial minimal schema test
+- Mobile settings UI: Base URL, API key (masked), model name, test button
+- Security tests: encryption, ownership, SSRF, no-log
+- Integration test: custom provider → structured output → validation
+- E2E test: configure → test → use in chat
+
+**Financial invariants unchanged:**
+
+- Same FinancialSnapshot
+- Same structured output validation pipeline
+- Same deterministic validation
+- Same financial engine authority
+- Same HARD protection enforcement
+
+**Security requirements:**
+
+- API keys encrypted at rest (AES-256-GCM)
+- Never return decrypted key to client
+- Never log API keys
+- HTTPS-only base URLs
+- Block localhost/private networks in production
+- Rate limiting: same as system provider (10/min, 100/hour)
+- Ownership isolation: one config per user
+
+**Acceptance:**
+
+- Migration applied successfully
+- User can save custom provider config
+- API key encrypted in database
+- Test connection works with OpenAI-compatible endpoint
+- Custom provider used in chat when configured
+- System provider used as fallback
+- Security tests pass (encryption, SSRF, ownership, no-log)
+- Integration test passes
+- E2E test passes
+- Typecheck, lint, build pass
+
+**QUALITY GATE:** typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests passed. Critical review found no BLOCKER/CRITICAL/HIGH findings. Process-local rate limiting and DNS-rebinding SSRF protection are explicitly deferred to M21 deployment hardening.
+
+Git commit: pending
+
+See AGENTS.md for full architecture.
+
 ---
 
 # M21 — Security hardening
 
-STATUS: TODO
+STATUS: IN PROGRESS
 
 Review:
 

@@ -379,20 +379,28 @@ log AI usage and cost
 
 AI provider must be abstracted.
 
-Suggested interface:
+Interface:
 
 AIProvider
+  generateStructured<T>(params): Promise<StructuredAIResult<T>>
 
-Methods may include:
+Initial implementation: OpenAI (system environment).
 
-generateAdvice()
-generateBudgetPlan()
-summarizeConversation()
-classifyImportedTransaction()
+M20 adds: user-configurable custom provider (OpenAI-compatible).
 
-Initial implementation may use OpenAI.
+Provider selection priority:
+1. User custom provider (if configured and enabled)
+2. System OpenAI provider (OPENAI_API_KEY environment)
+3. Error (no provider available)
 
-Provider abstraction must allow model replacement without rewriting financial domain logic.
+Custom provider:
+- Base URL, API key (encrypted at rest), model name
+- Same structured output format (OpenAI Responses API)
+- Same validation pipeline
+- Test connection endpoint (non-financial)
+- Mobile settings UI
+
+Provider abstraction allows model replacement without rewriting financial domain logic.
 
 ---
 

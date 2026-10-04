@@ -67,6 +67,16 @@
 - Full quality gate passed: typecheck, lint, 150 unit/integration tests, production build, and 10 Playwright tests.
 - Critical review found no BLOCKER/CRITICAL/HIGH findings; imported rows do not affect financial balance until explicit confirmation, and confirmed rows are idempotent under row lock.
 
+### M20 start
+- Bank provider architecture will expose a narrow provider interface returning normalized raw transactions; providers remain adapters and cannot write financial records directly.
+
+### M20 completion
+- Added migration 0015 and user-scoped AI provider configuration with AES-256-GCM key encryption, validation, enable/disable/delete APIs, OpenAI-compatible structured-output adapter, provider fallback selection, connection test, settings UI, and mobile navigation coverage.
+- Added narrow BankProvider/CsvProvider/ManualProvider adapters and kept transaction confirmation as the only financial write path.
+- Added process-local 10/minute and 100/hour AI rate limits with explicit M21 shared-storage follow-up.
+- Quality gate passed: typecheck, lint, 156 unit/integration tests, production build, and 11 Playwright tests. Critical diff review found no BLOCKER/CRITICAL/HIGH findings.
+- M20 is ready for milestone commit; next milestone is M21 security hardening.
+
 ## Session: 2026-10-03
 
 ### Current Status
