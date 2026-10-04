@@ -25,6 +25,15 @@
 - Note: a parallel typecheck/build invocation temporarily caused missing generated `.next/types`; reran typecheck after build sequentially and it passed. No source issue.
 - Next milestone: M16 automatic durable conversation compression and measured context size/token usage.
 
+### M16 implementation
+- Existing chat already bounds requests to the latest 10 messages and records provider-reported token usage. Added automatic structured summary generation once the conversation exceeds 20 messages or approximately 15K historical tokens.
+- Compression processes only obsolete messages, in batches of at most 10 messages / 20K characters; the most recent 10 remain verbatim context. Summary excludes financial arithmetic and is treated as untrusted preference context.
+- Added monotonic summary coverage updates under conversation row lock, provider-usage logging for compression calls, an input-token estimate in chat responses, and integration coverage for long-running conversations.
+- Targeted M16 test, typecheck, and lint pass. Full gate and critical hostile review pending.
+- Full M16 gate: 19 files / 96 unit-integration tests, typecheck, lint, production build, and 8/8 mobile Playwright tests passed. Targeted final chat suite passed 6 tests after adding prompt-injection/stale-summary and graceful-failure assertions.
+- Critical review found no remaining BLOCKER/CRITICAL/HIGH findings. No external LLM API was required; all provider calls in tests are mocked.
+- M16 complete; milestone commit pending. Next: M17 AI evaluation suite (40+ realistic adversarial scenarios).
+
 ## Session: 2026-10-03
 
 ### Current Status

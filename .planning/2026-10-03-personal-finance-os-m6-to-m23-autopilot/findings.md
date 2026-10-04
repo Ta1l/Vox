@@ -22,6 +22,12 @@
 | Vitest target paths under `src/lib` returned no test files | Tests live under `tests/unit`; rerun with `tests/unit/ai/...` paths. |
 | Batch-allocation regression initially expected 80,000 to exceed the 100,000 cycle balance | The test was wrong; raised the over-limit case to 120,000. |
 | Typecheck raced with production build while both regenerated `.next/types` | Run typecheck/build sequentially; no source defect. |
+| First M16 patch context assumed a different declaration order than source | Re-read current conversation schema and applied the focused patch against actual structure. |
+
+## M16 conversation compression
+- Existing `buildConversationContext` already sends only the latest 10 messages and includes a validated optional summary; actual provider usage is logged by `requestValidatedAI`.
+- Auto-compression triggers at 20 stored messages or an approximate 15K historical token threshold (characters / 4), summarizes only the prefix older than the latest 10, and caps each request to 10 messages / 20K characters.
+- Summary coverage is a message-prefix count; writes lock the owned conversation and reject stale/lower-coverage updates. Current financial facts and arithmetic remain excluded from conversational summaries.
 
 ## Resources
 -

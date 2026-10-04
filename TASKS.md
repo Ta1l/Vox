@@ -526,13 +526,13 @@ Implemented deterministic proposal schema/validation, snapshot-version TOCTOU pr
 
 **QUALITY GATE:** typecheck, lint, all 94 unit/integration tests, production build, and all 8 mobile Playwright tests passed. Critical review fixed HIGH risk of non-atomic approval and idempotency collisions. Independent Opus financial audit remains recommended before production release.
 
-Git commit: pending
+Git commit: 066e109
 
 ---
 
 # M16 — AI conversation compression
 
-STATUS: IN_PROGRESS
+STATUS: COMPLETE ✓
 
 Implement structured summaries.
 
@@ -543,6 +543,12 @@ Measure token usage.
 Acceptance:
 
 long-running conversation remains useful without resending entire history.
+
+Implemented automatic structured summaries when a conversation reaches 20 messages or approximately 15K tokens; only older messages are compressed in bounded 10-message/20K-character batches while the latest 10 remain in context. Provider token usage is logged; request prompt size is estimated and returned. Summary updates are monotonic and concurrency-safe.
+
+**QUALITY GATE:** typecheck, lint, 96 unit/integration tests, production build, and 8 Playwright tests passed. Critical review verified bounded DB reads, prompt-injection handling, no financial arithmetic in summary policy, stale-summary protection, and graceful handling of summary provider failure.
+
+Git commit: pending
 
 ---
 

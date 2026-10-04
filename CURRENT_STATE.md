@@ -4,7 +4,7 @@ Last updated: 2026-10-04
 
 ## Project status
 
-STATUS: M15 COMPLETE — QUALITY GATE PASSED — M16 IN PROGRESS
+STATUS: M16 COMPLETE — QUALITY GATE PASSED — M17 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -190,17 +190,24 @@ provider abstraction with deterministic Financial Engine
 - Full gate passed: typecheck, lint, 94 unit/integration tests, production build, 8 Playwright tests
 - Independent Opus financial audit remains recommended before production release
 
+**M16 - AI conversation compression:** COMPLETE ✓
+- Automatically stores strict structured summaries after 20 messages or an estimated 15K-token history threshold
+- Compresses only the prefix older than the latest 10 messages, in bounded batches; provider token use is logged and current prompt size is estimated
+- Summary writes are monotonic under a conversation row lock; summary failure does not discard a successful advice reply
+- Quality gate passed: typecheck, lint, 96 unit/integration tests, production build, 8 Playwright tests
+- Independent Opus audit remains recommended before production release
+
 ---
 
 ## Current database state
 
-No finalized schema yet.
+PostgreSQL schema and migrations are implemented through migration 0012 (AI conversations, messages, summaries, and usage logs).
 
 ---
 
 ## Current AI state
 
-No AI integration yet.
+AI infrastructure includes structured OpenAI provider, strict output validation, usage logging, read-only FinancialSnapshot context, bounded chat history, durable summaries, and draft-only advice/proposals. OPENAI_API_KEY is not configured in the local test environment; provider behavior is mocked in tests.
 
 ---
 
@@ -212,7 +219,7 @@ Not deployed.
 
 ## Current tests
 
-None yet.
+Unit/integration suite: 96 tests passed. Playwright mobile navigation suite: 8 tests passed. Typecheck, lint, and production build passed.
 
 ---
 
@@ -230,19 +237,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 16:** IN PROGRESS
+**Milestone 17:** IN PROGRESS
 
-AI conversation compression with durable summaries.
+AI adversarial evaluation suite.
 
 ---
 
 ## Next action
 
-M15 review checkpoint passed: 94 unit/integration tests, typecheck, lint, production build, and 8 Playwright tests; critical review fixed batch atomicity and idempotency risks. Independent Opus financial audit remains recommended before production release.
+M16 complete. Begin M17 — AI eval suite (at least 40 realistic adversarial scenarios plus deterministic assertions).
 
 External self-review script intentionally not invoked.
 
-Continue M16 — AI conversation compression
+Continue M17 — AI eval suite
 
 See TASKS.md and AUTOPILOT.md.
 
