@@ -462,7 +462,7 @@ Git commit: pending
 
 # M14 — AI adviser/chat
 
-STATUS: TODO
+STATUS: COMPLETE ✓
 
 Implement mobile AI chat.
 
@@ -484,6 +484,12 @@ AI should answer questions such as:
 - Can I reduce any negotiable expense?
 
 AI proposal must remain a draft.
+
+Implemented user-scoped conversation/message/summary persistence, bounded latest-10 context with current FinancialSnapshot, strict draft-only advice validation and usage logging, mobile `/chat`, APIs, and ownership/invalid-output tests.
+
+**QUALITY GATE:** typecheck, lint, 91 unit/integration tests, production build, and mobile chat Playwright test passed. OpenAI API was not called without a configured key.
+
+Git commit: pending
 
 ---
 

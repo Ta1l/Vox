@@ -34,3 +34,8 @@
 - The Claude/Opus auditor instructions exist in `.claude/agents/financial-auditor.md`, but this environment offers no callable Claude/Opus integration. Independent audit must remain a pre-production caveat; deterministic adversarial tests are required now.
 - Simulation is read-only: DB-backed snapshot and owned entity IDs are authoritative; inputs are validated in integer kopecks; model-provided arithmetic is never trusted.
 - Need distinguish cash-spending debt payments from goal reservations to avoid falsely counting savings transfer twice.
+
+## M14 recovery (2026-10-04)
+- HEAD `492de29` completes M13; no tracked changes. User `AGENTS.md` and planning controls are untracked and must be preserved.
+- M14 requires stored mobile adviser conversation, current deterministic snapshot, structured summary plus bounded last-10 window, and draft-only answers. M16 owns generation/compression of durable summaries.
+- OpenAI Responses structured JSON schema message input confirmed via current Context7 API documentation; no external API key for local tests.

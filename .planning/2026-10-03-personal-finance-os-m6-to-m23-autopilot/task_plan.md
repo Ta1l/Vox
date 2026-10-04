@@ -4,10 +4,10 @@
 Complete the remaining milestones from the recovered M6 implementation through M23, with tests, quality gates, documentation, and one commit per milestone.
 
 ## Next Step
-Read M14 AI adviser/chat requirements and implement bounded server-side conversation context with draft-only AI responses.
+Read M15 AI weekly budgeting requirements and implement validated draft allocations.
 
 ## Current Phase
-Phase 4 — M14 AI adviser/chat
+Phase 4 — M15 AI weekly budgeting
 
 ## Phases
 
@@ -36,6 +36,7 @@ Phase 4 — M14 AI adviser/chat
 - [x] Implement M11 planning cycles and allocations
 - [x] Implement M12 deterministic financial simulation and financial audit
 - [x] Implement M13 AI infrastructure with structured output and usage logging
+- [x] Implement M14 bounded AI adviser/chat
 - [ ] Implement each remaining unfinished milestone in TASKS.md
 - [ ] Apply M10/M12/M17/M23 quality gates
 - [ ] Commit every completed milestone separately
@@ -59,3 +60,5 @@ Phase 4 — M14 AI adviser/chat
 | M9 test expected IN_TRANSIT total to be zero | Corrected regression expectation to 50,000 while keeping available cash at 100,000. |
 | M10 E2E initially could not find the legacy `Баланс` heading | Restored the heading in the loading shell while keeping the live dashboard cards. |
 | M10 targeted dashboard test expected only same-week dates | Monday-based week correctly includes 30 September; updated expected weekly expense total. |
+| M14 local migration command could not replay old schema | Existing local DB had all baseline tables but empty drizzle migration journal; verified 0012 SQL and applied it to local dev DB for integration tests. Existing migration tracking needs reconciliation before future CLI migrations. |
+| M14 E2E chat send failed on missing fixed development user | Kept navigation E2E seed-independent; exercised user-scoped chat send via integration test with dedicated test users. |

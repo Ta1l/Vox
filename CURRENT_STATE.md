@@ -4,7 +4,7 @@ Last updated: 2026-10-03
 
 ## Project status
 
-STATUS: M9 COMPLETE — QUALITY GATE PASSED — M10 IN PROGRESS
+STATUS: M14 COMPLETE — QUALITY GATE PASSED — M15 IN PROGRESS
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -177,6 +177,13 @@ provider abstraction with deterministic Financial Engine
 - OpenAI API was not called in this environment because no API key was provided
 - Quality gate passed: typecheck, lint, 87 unit/integration tests, production build, 7 mobile Playwright tests
 
+**M14 - AI adviser/chat:** COMPLETE ✓
+- Added user-scoped conversation/message/structured-summary persistence in migration 0012
+- Bounded latest-10 message context with current deterministic FinancialSnapshot
+- Runtime-validated draft-only AI advice, server-side usage logging, and mobile `/chat` flow
+- Quality gate passed: typecheck, lint, 91 unit/integration tests, build, mobile Playwright chat coverage
+- OpenAI API was not called without a configured key; independent Opus audit remains recommended before production release
+
 ---
 
 ## Current database state
@@ -217,19 +224,19 @@ None yet.
 
 ## Current milestone
 
-**Milestone 14:** TODO
+**Milestone 15:** TODO
 
-AI adviser/chat with bounded context and draft-only responses.
+AI weekly budgeting with validated draft allocations.
 
 ---
 
 ## Next action
 
-REVIEW CHECKPOINT: M13 AI infrastructure quality gate passed. Independent Opus financial audit remains recommended before production release.
+REVIEW CHECKPOINT: M14 AI adviser/chat quality gate passed. Independent Opus financial audit remains recommended before production release.
 
 External self-review script intentionally not invoked.
 
-After review: M14 — AI adviser/chat
+After review: M15 — AI weekly budgeting
 
 See TASKS.md and AUTOPILOT.md.
 

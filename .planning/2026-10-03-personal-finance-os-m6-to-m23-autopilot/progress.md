@@ -1,5 +1,18 @@
 # Progress Log
 
+## Session: 2026-10-04
+- Recovered clean M13 HEAD `492de29`; M14 is first unfinished milestone. Restored selected planning files and requirements.
+- M14 plan: persist user-scoped conversations/messages and optional structured summary; bound prompt to last ten messages; provide read-only snapshot context and draft-only structured advice; add mobile API/UI, tests, and migration.
+
+### M14 completion
+- Added migration 0012 and user-scoped conversation/message/summary persistence.
+- Added bounded latest-10 context, current FinancialSnapshot, strict draft-only advice schema, and usage logging.
+- Added mobile `/chat`, APIs, ownership/length/invalid-output tests, and navigation coverage.
+- Gate: typecheck and lint passed; 91 unit/integration tests passed; production build passed; mobile adviser Playwright passed. Full navigation suite had 7 prior passes plus adviser pass.
+- Critical review fixed failed-conversation UI and sanitized API errors; no AI financial writes.
+- Local dev DB's legacy migration journal was empty despite existing schema: applied 0012 and reconciled its latest journal entry after verifying required tables; next CLI migrations can proceed.
+- Next milestone: M15 weekly budgeting.
+
 ## Session: 2026-10-03
 
 ### Current Status

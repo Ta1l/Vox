@@ -62,4 +62,11 @@ test.describe("Mobile Application", () => {
     await expect(page.getByRole("heading", { name: "Планирование" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Начать планирование" })).toBeVisible();
   });
+
+  test("should render mobile adviser chat", async ({ page }) => {
+    await page.goto("/chat");
+    await expect(page.getByRole("heading", { name: "Финансовый советник" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Новый чат" })).toBeVisible();
+    await expect(page.getByText("Начать разговор")).toBeVisible();
+  });
 });
