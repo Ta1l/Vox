@@ -1,9 +1,19 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
+import { proxy } from "@/proxy";
 import { configuredAuthToken, matchesAuthToken, requestOriginAllowed, securityHeaders } from "@/lib/security/requestSecurity";
 
 describe("request security", () => {
   const previous = process.env.APP_AUTH_TOKEN;
-  afterEach(() => { if (previous === undefined) delete process.env.APP_AUTH_TOKEN; else process.env.APP_AUTH_TOKEN = previous; });
+  afterEach(() => { vi.unstubAllEnvs(); if (previous === undefined) delete process.env.APP_AUTH_TOKEN; else process.env.APP_AUTH_TOKEN = previous; });
+
+  it("blocks unauthenticated production API requests at the proxy", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("APP_AUTH_TOKEN", "x".repeat(32));
+    const response = proxy(new NextRequest("https://fin.example/api/ai-provider/config"));
+    expect(response.status).toBe(401);
+    expect(response.headers.get("X-Frame-Options")).toBe("DENY");
+  });
 
   it("requires a sufficiently strong production token and compares it safely", () => {
     process.env.APP_AUTH_TOKEN = "x".repeat(32);

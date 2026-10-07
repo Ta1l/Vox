@@ -1,10 +1,12 @@
 # CURRENT_STATE.md
 
-Last updated: 2026-10-04
+Last updated: 2026-10-08
 
 ## Project status
 
 STATUS: M23 COMPLETE — QUALITY GATE PASSED — M24 FINAL AUDIT PENDING
+
+Dependency audit: Next.js 16.4.0 and Tailwind CSS 4.3.3; production Docker runner installs only production dependencies. Production audit has 0 advisories. Nine dev-only advisory nodes remain through stable Drizzle Kit and matching Next ESLint config; see `DEPENDENCY_AUDIT_REPORT.md`. VPS deployment has not been performed.
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -74,7 +76,7 @@ provider abstraction with deterministic Financial Engine
 ## Current implementation
 
 **M1 - Repository foundation:** COMPLETE ✓
-- Next.js 15 with App Router
+- Next.js 16 with App Router
 - TypeScript strict mode
 - Tailwind CSS
 - Mobile-first UI shell (390×844 viewport)

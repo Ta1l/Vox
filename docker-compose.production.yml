@@ -52,7 +52,9 @@ services:
     networks: [internal]
 
   migrate:
-    build: .
+    build:
+      context: .
+      target: migrate
     restart: "no"
     command: ["npm", "run", "db:migrate"]
     environment:

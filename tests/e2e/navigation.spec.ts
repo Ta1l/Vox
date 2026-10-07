@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Mobile Application", () => {
   test("should render homepage with bottom navigation", async ({ page }) => {
+    await page.route("**/api/dashboard", (route) => route.fulfill({ json: { financial: { availableCashKopecks: 0, protectedAmountKopecks: 0, discretionaryAmountKopecks: 0, incomeInTransitKopecks: 0 } } }));
+    await page.route("**/api/calendar?*", (route) => route.fulfill({ json: { events: [] } }));
     await page.goto("/");
 
     await expect(page.getByRole("link", { name: "Календарь" })).toBeVisible();
@@ -37,13 +39,13 @@ test.describe("Mobile Application", () => {
   test("should render debts page", async ({ page }) => {
     await page.goto("/debts");
     await expect(page.getByRole("heading", { name: "Долги" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
+    await expect(page.locator("header").getByRole("button", { name: "Добавить" })).toBeVisible();
   });
 
   test("should render goals page", async ({ page }) => {
     await page.goto("/goals");
     await expect(page.getByRole("heading", { name: "Цели" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
+    await expect(page.locator("header").getByRole("button", { name: "Добавить" })).toBeVisible();
   });
 
   test("should render envelopes page", async ({ page }) => {
