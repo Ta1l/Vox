@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { budgetEnvelopes } from "@/lib/db/schema/envelopes";
 import { debtPayments } from "@/lib/db/schema/debts";
@@ -30,7 +30,7 @@ export interface FinancialSnapshot { availableCashKopecks: money.Money; protecte
 export async function getFinancialSnapshot(userId: string): Promise<FinancialSnapshot> {
   const [received, transit, expenses, debtOnlyPayments, envelopes] = await Promise.all([
     db.select({ total: sql<number>`coalesce(sum(${incomeEntries.amountKopecks}), 0)` }).from(incomeEntries).where(and(eq(incomeEntries.userId, userId), eq(incomeEntries.status, "RECEIVED"))),
-    db.select({ total: sql<number>`coalesce(sum(${incomeEntries.amountKopecks}), 0)` }).from(incomeEntries).where(and(eq(incomeEntries.userId, userId), eq(incomeEntries.status, "IN_TRANSIT"))),
+    db.select({ total: sql<number>`coalesce(sum(${incomeEntries.amountKopecks}), 0)` }).from(incomeEntries).where(and(eq(incomeEntries.userId, userId), inArray(incomeEntries.status, ["EARNED", "IN_TRANSIT"]))),
     db.select({ total: sql<number>`coalesce(sum(${expenseEntries.amountKopecks}), 0)` }).from(expenseEntries).where(eq(expenseEntries.userId, userId)),
     db.select({ total: sql<number>`coalesce(sum(${debtPayments.amountKopecks}), 0)` }).from(debtPayments).where(and(eq(debtPayments.userId, userId), isNull(debtPayments.expenseId))),
     getEnvelopes(userId),

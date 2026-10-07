@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/client";
 import { incomeEntries, IncomeStatus, type NewIncomeEntry } from "@/lib/db/schema/income";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import * as money from "@/lib/money";
 
 /**
@@ -127,13 +127,13 @@ export async function getReceivedIncomeTotal(userId: string): Promise<money.Mone
 
 /**
  * Calculate income in transit (RULE-I2)
- * Expected income that is not yet received
+ * Earned or in transit income that is not yet received (RULE-FS2)
  */
 export async function getIncomeInTransit(userId: string): Promise<money.Money> {
   const inTransit = await db.query.incomeEntries.findMany({
     where: and(
       eq(incomeEntries.userId, userId),
-      eq(incomeEntries.status, "IN_TRANSIT")
+      inArray(incomeEntries.status, ["EARNED", "IN_TRANSIT"])
     ),
   });
 

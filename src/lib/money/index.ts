@@ -11,6 +11,16 @@
 
 export type Money = number; // Integer kopecks
 
+/** Parse a positive ruble amount without rounding or accepting partial input. */
+export function parseRubles(input: string): Money {
+  const value = input.trim();
+  if (!/^\d+(?:[,.]\d{1,2})?$/.test(value)) throw new Error("Введите сумму больше нуля, не более двух знаков после запятой");
+  const [rubles, fractional = ""] = value.replace(",", ".").split(".");
+  const kopecks = BigInt(rubles) * BigInt(100) + BigInt(fractional.padEnd(2, "0") || "0");
+  if (kopecks <= BigInt(0) || kopecks > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error("Введите допустимую сумму больше нуля");
+  return Number(kopecks);
+}
+
 /**
  * Convert rubles to kopecks
  * @param rubles - Amount in rubles (can be decimal)

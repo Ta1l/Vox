@@ -7,6 +7,10 @@
   --foreground: #f8fafc;
 }
 
+@font-face { font-family: "Manrope"; src: url("/fonts/manrope-regular.ttf") format("truetype"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("/fonts/manrope-bold.ttf") format("truetype"); font-weight: 700 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "DM Mono"; src: url("/fonts/dm-mono-regular.ttf") format("truetype"); font-weight: 400 500; font-style: normal; font-display: swap; }
+
 @media (prefers-color-scheme: light) {
   :root {
     --background: #ffffff;
@@ -17,9 +21,20 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: "Manrope", ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "cv11" 1, "ss01" 1;
   min-height: 100vh;
   min-height: 100dvh;
+}
+
+.tabular-nums { font-family: "DM Mono", "SFMono-Regular", Consolas, monospace; letter-spacing: -0.04em; }
+.icon-button { display: grid; min-height: 44px; min-width: 44px; place-items: center; border: 1px solid #334039; border-radius: 999px; color: #c4d0c6; transition: background .16s ease, color .16s ease, transform .16s ease; }
+.icon-button:active { transform: scale(.92); background: #26352a; }
+
+button, a { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid #d8c38d; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
 * {
@@ -32,12 +47,45 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
+
+button, [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input, textarea, select { font-size: 16px; }
 
 a {
   color: inherit;
   text-decoration: none;
 }
+
+.calendar-day { background: #172019; border: 1px solid transparent; border-radius: 10px; }
+.calendar-section { position: relative; }
+.calendar-section::before { content: ""; position: absolute; top: 1.75rem; left: -1rem; right: -1rem; height: 15rem; pointer-events: none; background: radial-gradient(ellipse at 50% 0%, #26352a55, transparent 68%); opacity: .8; z-index: -1; }
+.calendar-section > .flex[aria-label="Обозначения календаря"] { font-size: 12px; gap: 1.25rem; }
+.calendar-section > .flex[aria-label="Обозначения календаря"] i { width: 8px; height: 8px; }
+@media (hover: hover) and (pointer: fine) { .calendar-day:hover { background: #1d2a21; border-color: #3c5143; } .month-arrow:hover { background: #26352a; } }
+.calendar-day.is-today { background: #26352a; }
+.calendar-day.is-selected { background: #d8c38d; color: #172018; border-color: #f0dca7; box-shadow: 0 5px 16px #0005; transform: translateY(-2px); }
+.calendar-day.is-selected .text-\[\#ee968a\], .calendar-day.is-selected .text-\[\#9fc9b0\] { color: #314336; }
+.today-number { background: #d8c38d; color: #172018; border-radius: 999px; font-weight: 700; }
+.month-arrow { border-radius: 999px; color: #dfe5dc; transition: background .2s ease, transform .2s ease; }
+@media (max-width: 320px) { .day-metrics { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: no-preference) {
+  .calendar-day { animation: calendar-in .35s both; }
+  .calendar-day:nth-child(7n + 2) { animation-delay: 20ms; }
+  .calendar-day:nth-child(7n + 3) { animation-delay: 40ms; }
+  .calendar-day:nth-child(7n + 4) { animation-delay: 60ms; }
+  .calendar-day:nth-child(7n + 5) { animation-delay: 80ms; }
+  .calendar-day:nth-child(7n + 6) { animation-delay: 100ms; }
+  .calendar-day:nth-child(7n) { animation-delay: 120ms; }
+}
+@keyframes calendar-in { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (prefers-color-scheme: dark) {
   html {

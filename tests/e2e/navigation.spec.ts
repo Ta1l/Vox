@@ -4,18 +4,10 @@ test.describe("Mobile Application", () => {
   test("should render homepage with bottom navigation", async ({ page }) => {
     await page.goto("/");
 
-    // Check page header
-    await expect(page.getByRole("heading", { name: "Финансы" })).toBeVisible();
-
-    // Check bottom navigation exists
-    await expect(page.getByText("Главная")).toBeVisible();
-    await expect(page.getByText("Календарь")).toBeVisible();
-    await expect(page.getByText("Доходы")).toBeVisible();
-    await expect(page.getByText("Расходы")).toBeVisible();
-
-    // Check balance section
-    await expect(page.getByText("Баланс")).toBeVisible();
-    await expect(page.getByText("Доступно")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Календарь" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "План" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Добавить" })).toBeVisible();
+    await expect(page.getByText("Доступно сейчас")).toBeVisible();
     await expect(page.getByText("Защищено")).toBeVisible();
   });
 
@@ -33,11 +25,13 @@ test.describe("Mobile Application", () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
-  test("should navigate to calendar page", async ({ page }) => {
+  test("should open a day from the calendar", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: /Календарь/i }).click();
-    await page.waitForURL("/calendar");
-    await expect(page.getByRole("heading", { name: "Календарь" })).toBeVisible();
+    const day = page.locator(".calendar-day").first();
+    await day.click();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.getByRole("button", { name: "Назад" }).click();
+    await expect(day).toBeFocused();
   });
 
   test("should render debts page", async ({ page }) => {

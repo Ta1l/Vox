@@ -2,6 +2,12 @@ import { describe, it, expect } from "vitest";
 import * as money from "@/lib/money";
 
 describe("Money utilities", () => {
+  it("parses strict positive ruble input without rounding", () => {
+    expect(["5000", "5000,50", "5000.50", "0,01"].map(money.parseRubles)).toEqual([500000, 500050, 500050, 1]);
+    for (const input of ["", "0", "-1", "1.001", "1e3", "12abc", "NaN", "90071992547410"]) {
+      expect(() => money.parseRubles(input)).toThrow();
+    }
+  });
   describe("toKopecks", () => {
     it("should convert rubles to kopecks", () => {
       expect(money.toKopecks(1250.50)).toBe(125050);

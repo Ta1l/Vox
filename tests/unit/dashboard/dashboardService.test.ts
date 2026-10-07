@@ -54,7 +54,8 @@ describe("dashboard snapshot", () => {
     expect(snapshot.expenses.weekly).toBe(16000);
     expect(snapshot.expenses.monthly).toBe(7000);
     expect(snapshot.financial.availableCashKopecks).toBe(84000);
-    expect(snapshot.financial.incomeInTransitKopecks).toBe(40000);
+    // RULE-FS2: both EARNED (25000) and IN_TRANSIT (40000) remain in transit.
+    expect(snapshot.financial.incomeInTransitKopecks).toBe(65000);
     expect(snapshot.nearestPayments[0]).toMatchObject({ name: "Rent", dueDate: "2026-10-04", amountKopecks: 30000, status: "PENDING" });
     expect(snapshot.debts[0]).toMatchObject({ name: "Card", currentBalanceKopecks: 60000 });
     expect(snapshot.goals[0]).toMatchObject({ name: "Vacation", savedAmountKopecks: 25000, targetAmountKopecks: 100000 });

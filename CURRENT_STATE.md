@@ -289,3 +289,18 @@ After every completed implementation milestone update:
 Keep this file concise.
 
 Do not turn it into a changelog.
+
+## Main screen presentation redesign (2026-10-06)
+
+- Calendar-first mobile home screen uses existing dashboard and calendar APIs.
+- Current available cash remains tied to the dashboard financial snapshot; calendar net uses received income minus expenses.
+- Added presentation calendar helpers/tests, privacy masking, month navigation, day view, action sheet, offline/error/loading states, and safe-area/touch accessibility polish.
+- No domain, API, schema, auth, or mutation flow changes.
+
+## Selected day implementation (2026-10-07)
+
+- Day view now shows earned, in transit, received, and spent amounts; cash net is secondary. The inline form records positive ruble amounts for the selected past/present UTC date through `POST /api/income` as `EARNED`, then reloads calendar and dashboard. Future dates are read-only.
+- RULE-FS2 now counts `EARNED + IN_TRANSIT` in both income and financial snapshots. Calendar `inTransitIncome` follows `earnedAt`; `expectedIncome` keeps its expected payment date. `CANCELLED` does not count as earned. Available and discretionary cash still require `RECEIVED`.
+- No migration or new dependency. Server validation rejects unsafe kopeck integers. The form guards duplicate taps, preserves a failed draft, distinguishes unknown POST outcome from a saved POST with failed refresh, and keeps screenshot/AI blocks informational.
+- Checks: 52 targeted unit tests (7 files), 4 day-view E2E tests and 3 affected navigation E2E tests pass; typecheck, lint and production build pass. A real API POST on a temporary development test user returned EARNED and GET calendar/dashboard confirmed earned and transit +500050 kopecks with available/discretionary unchanged; test records were removed.
+- Before/after browser screenshots at 375×812 and 390×844 are in `.planning/2026-10-07-day-view-implementation/`; `day-after-baseline-*` uses the original planning fixture for direct comparison. Route mocks are visual/interaction evidence only. No physical phone was available; safe-area, keyboard and gesture behavior still need hardware verification.

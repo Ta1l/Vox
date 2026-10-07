@@ -4,7 +4,7 @@ import * as money from "@/lib/money";
 import { z } from "zod";
 
 const createIncomeSchema = z.object({
-  amountKopecks: z.number().int().positive(),
+  amountKopecks: z.number().int().positive().safe(),
   source: z.string().max(256).optional(),
   description: z.string().optional(),
   earnedAt: z.string().datetime(),
