@@ -229,7 +229,7 @@ AI infrastructure includes structured OpenAI provider, strict output validation,
 
 ## Current deployment state
 
-Not deployed.
+Deployment uses Docker Compose with PostgreSQL, the web app, worker, migrations, and Caddy. Configure the public domain and production environment privately; deployment-specific addresses, paths, and operational details are not published.
 
 ---
 
