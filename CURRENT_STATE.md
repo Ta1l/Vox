@@ -6,7 +6,7 @@ Last updated: 2026-10-08
 
 STATUS: M23 COMPLETE — QUALITY GATE PASSED — M24 FINAL AUDIT PENDING
 
-Dependency audit: Next.js 16.4.0 and Tailwind CSS 4.3.3; production Docker runner installs only production dependencies. Production audit has 0 advisories. Nine dev-only advisory nodes remain through stable Drizzle Kit and matching Next ESLint config; see `DEPENDENCY_AUDIT_REPORT.md`. VPS deployment has not been performed.
+Dependency audit: Next.js 16.4.0 and Tailwind CSS 4.3.3; production Docker runner installs only production dependencies. Production audit has 0 advisories. Nine dev-only advisory nodes remain through stable Drizzle Kit and matching Next ESLint config; see `DEPENDENCY_AUDIT_REPORT.md`. Updated images are deployed on the VPS; health, authentication, dashboard, and worker checks pass.
 
 Milestone 5 завершён. Calendar с financial events реализован.
 
@@ -237,7 +237,7 @@ Deployment uses Docker Compose with PostgreSQL, the web app, worker, migrations,
 
 ## Current tests
 
-Unit/integration suite: 163 tests passed. Playwright mobile navigation suite: 11 tests passed in a single worker. Typecheck, lint, production build, Docker build, Compose validation, Caddy validation, and encrypted backup verification passed.
+Dependency-audit verification: 168 unit/integration tests passed in the full run; 3 date-sensitive tests passed on targeted rerun after correction. Mobile Playwright covered 15 scenarios across the initial and targeted reruns. Typecheck, lint, production build, Docker build, migration, production smoke, and encrypted backup verification passed. See `DEPENDENCY_AUDIT_REPORT.md` for test-run details.
 
 ---
 
@@ -269,7 +269,7 @@ External self-review script intentionally not invoked.
 
 Continue M24 — final audit when an independent reviewer is available.
 
-M23 deployment artifacts are implemented and locally validated: multi-stage Docker image, production Compose topology (`caddy`, `web`, one-shot `migrate`, `worker`, `postgres`), internal-only database network, health-gated startup, Caddy TLS reverse proxy, production env template, worker heartbeat, and authenticated production smoke script. No real VPS or production secrets were touched. `docker compose config`, Docker image build, worker startup/shutdown, Caddy validation, and all pre-existing test gates pass. `npm audit --omit=dev` still reports two nested PostCSS advisories requiring a breaking Next.js 16 upgrade; this remains a release-blocking dependency follow-up rather than an unsafe force upgrade. The worker currently provides a supervised heartbeat and job-monitoring integration point; no domain job queue is enabled until pg-boss is introduced.
+M23 deployment artifacts are running on the VPS: multi-stage Docker image, production Compose topology (`caddy`, `web`, one-shot `migrate`, `worker`, `postgres`), internal-only database network, health-gated startup, Caddy TLS reverse proxy, worker heartbeat, and authenticated production smoke script. The dependency update cleared the two production PostCSS advisories; `npm audit --omit=dev` now reports zero. The worker currently provides a supervised heartbeat and job-monitoring integration point; no domain job queue is enabled until pg-boss is introduced.
 
 See TASKS.md and AUTOPILOT.md.
 

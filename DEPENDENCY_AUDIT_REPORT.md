@@ -1,6 +1,6 @@
 # Dependency audit execution — 2026-10-08
 
-Branch: `dependency-audit-remediation`. Deployment to VPS was excluded by the plan and has not been performed.
+Branch: `dependency-audit-remediation`. The plan excluded VPS deployment; a later explicit user request authorized it.
 
 ## Baseline
 
@@ -41,3 +41,11 @@ No `npm audit fix --force`, major downgrade, or unverified override was used.
 - Production smoke: health 200, unauthenticated AI config 401, login 200, authenticated dashboard/settings/AI config 200, income POST 201, worker heartbeat observed.
 - Added a proxy security test; all four cases in its file pass.
 - Mobile Playwright: 12 tests passed in the initial run. Two ambiguous selectors were corrected; the cold-start homepage test now uses fixed API responses for its UI assertion. All 3 affected tests passed on targeted rerun, covering all 15 scenarios across the two runs. A separate rerun was interrupted by a stale Turbopack dev cache after moving the proxy; restarting with a fresh cache resolved it.
+
+## VPS deployment verification
+
+- Before deployment, unauthenticated `GET /api/ai-provider/config` returned 200 on the old release. After deploying commit `7b3bfb6`, it returns 401; unauthenticated dashboard also returns 401.
+- Encrypted and verified a pre-deployment PostgreSQL backup outside the repository; tagged previous web, worker, and migrate images for rollback.
+- Built release images with Node 22, ran production migrations successfully, and restarted web and worker. PostgreSQL and Caddy remained running.
+- Web is healthy with zero restarts; HTTPS health returns 200; authenticated login/dashboard smoke passes. Worker heartbeat is present with zero restarts. No application errors appeared in the checked startup logs.
+- No production financial records were created during verification.
